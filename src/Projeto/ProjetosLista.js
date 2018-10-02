@@ -12,7 +12,7 @@ class ProjetosLista extends Component {
                 <HeaderCustom />
                 <Container>
                     <h2>Lista de Projetos</h2>
-                    <p>Selecione o projeto</p>
+                    <h3>Selecione o projeto</h3>
 
                     <Grid columns={5} stackable>
                         <Projeto titulo='Projeto 1' icone='futbol outline' />
