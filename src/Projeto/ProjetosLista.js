@@ -1,27 +1,46 @@
 import React, { Component } from 'react';
-import { Grid, Container } from 'semantic-ui-react';
+import { Grid, Container, Header } from 'semantic-ui-react';
 
 import Projeto from './Projeto';
 import HeaderCustom from './HeaderCustom';
+import config from './../config';
 
 
 class ProjetosLista extends Component {
+
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            projetos: {}
+        }
+
+        config.syncState(
+            'projetos', {
+                context: this,
+                state: 'projetos',
+                asArray: false
+            })
+    }
+
     render() {
         return (
             <div>
                 <HeaderCustom />
                 <Container>
-                    <h2>Lista de Projetos</h2>
-                    <h3>Selecione o projeto</h3>
+                    <Header as='h2' dividing>Lista de Projetos</Header>
+                    <Header as='h3'>Selecione o projeto</Header>
+                    {/*<p>{JSON.stringify(this.state.projetos)}</p>*/}
 
                     <Grid columns={5} stackable>
-                        <Projeto titulo='Projeto 1' icone='futbol outline' />
-                        <Projeto titulo='Projeto 2' icone='trophy' />
-                        <Projeto titulo='Projeto 3' icone='music' />
-                        <Projeto titulo='Projeto 4' icone='globe' />
-                        <Projeto titulo='Projeto 5' icone='paw' />
-                        <Projeto titulo='Projeto 6' icone='puzzle piece' />
-                        <Projeto titulo='Projeto 7' icone='user md' />
+                        {
+                            Object.keys(this.state.projetos)
+                            .map(key => {
+                                return <Projeto key={key} titulo={this.state.projetos[key].nome} descricao={this.state.projetos[key].descricao}/>
+                            }
+
+                            )
+                        }
                     </Grid>
                 </Container>
             </div>

@@ -33,11 +33,8 @@ class Projeto extends Component {
 
                 <Segment >
                     <Link to={`/kanban/${this.props.titulo}`}>
-                        <Header as='h2'>
-                            <Header.Subheader>
-                                <Icon name={this.props.icone} />
-                            </Header.Subheader>
-                            {this.props.titulo}
+                        <Header as='h3' color='teal'>
+                        {this.props.titulo} <Icon name='sign in' size='mini' />
                         </Header>
                     </Link>
                     <List>
@@ -52,8 +49,7 @@ class Projeto extends Component {
                                 <Modal.Content>
                                     <Modal.Description>
                                         <Header>Projeto 1</Header>
-                                        <h3>We've found the following gravatar image associated with your e-mail address.</h3>
-                                        <h3>Is it okay to use this photo?</h3>
+                                        <h3>{this.props.descricao}</h3>
                                     </Modal.Description>
                                 </Modal.Content>
                                 <Modal.Actions>
