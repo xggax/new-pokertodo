@@ -3,15 +3,14 @@ import { Grid, Segment, Header, Icon, ListItem, List } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 const Storie = props => {
-    let id = props.id;
     return (
-        <span key={id}>
+        <span key={props.id}>
             {/* Os parâmetros passados pelas rotas chegam no componente através da propriedade params.
                 Poderíamos acessar o parâmetro id de dentro do componente respectivo à rota */
             }
             <Segment >
                 <List>
-                    <Header as='h2'>{props.titulo}
+                    <Header as='h3'>Título: {props.titulo}
                         <Header.Subheader>
                             <List.Item>
                                 <p>Descrição: {props.descricao}</p>
@@ -30,7 +29,6 @@ const Storie = props => {
                             </ListItem>
                         </Header.Subheader>
                     </Header>
-
                 </List>
             </Segment>
         </span>

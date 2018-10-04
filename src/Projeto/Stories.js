@@ -12,7 +12,7 @@ class Stories extends Component {
 
         this.state = {
             stories: {},
-            estaCarregando: false
+            estaCarregando: false,
         }
     }
 
@@ -40,60 +40,10 @@ class Stories extends Component {
             .catch(err => {
                 console.log('erro');
             })
-    }
-
-    renderStories(storie, id) {
-
-
-        return (
-            <span key={id}>
-                <Grid stackable>
-                    <Grid.Row>
-                        <Grid.Column width={5}>
-                            <Header as='h3'>A Fazer</Header>
-                            <List>
-                                {
-                                    storie.situacao === 'A fazer' &&
-                                    <List.Item>
-
-                                        {storie.storiesTitulo}
-
-                                    </List.Item>
-                                }
-                            </List>
-                        </Grid.Column>
-                        <Grid.Column width={5}>
-                            <Header as='h3'>Fazendo</Header>
-                            <List>
-                                {
-                                    storie.situacao === 'Fazendo' &&
-                                    <List.Item>
-
-                                        {storie.storiesTitulo}
-
-                                    </List.Item>
-                                }
-                            </List>
-                        </Grid.Column>
-                        <Grid.Column width={5}>
-                            <Header as='h3'>Concluída</Header>
-                            <List>
-                                {
-                                    storie.situacao === 'Concluida' &&
-                                    <List.Item>
-
-                                        {storie.storiesTitulo}
-
-                                    </List.Item>
-                                }
-                            </List>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-            </span>
-        )
 
     }
+
+
 
 
     render() {
@@ -107,33 +57,109 @@ class Stories extends Component {
                 {/*<h2>{JSON.stringify(this.props)}</h2>*/}
                 <Container>
                     <Segment piled>
-                    <Header as='h2'>Kanban</Header>
+                        <Header as='h2'>Kanban</Header>
                     </Segment>
-                    <Header as='h3' >
+                    <Header as='h2' >
                         {this.props.match.params.nome}
                         <Header.Subheader>{this.state.stories.descricao}</Header.Subheader>
                     </Header>
+
                     <br />
 
-                    {
-                        this.state.stories.stories && Object.keys(this.state.stories.stories)
-                            .map(
-                                key => {
-                                    console.log('key:', key);
-                                    console.log('storie: ', this.state.stories.stories[key]);
-                                    //return this.state.stories.stories[key], key);
-                                    return <Storie id={key}
-                                        descricao={this.state.stories.stories[key].storiesDesc}
-                                        titulo={this.state.stories.stories[key].storiesTitulo}
-                                        dataInicio={this.state.stories.stories[key].dataInicio}
-                                        dataFim={this.state.stories.stories[key].dataFim}
-                                        situacao={this.state.stories.stories[key].situacao}
-                                        pontos={this.state.stories.stories[key].storiesPoint}
-                                    />
-                                }
-                            )
-                    }
+                    <Grid stackable>
+                        <Grid.Row>
+                            <Grid.Column width={5} >
+                                <List>
+                                    {
 
+                                        <List.Item>
+
+                                            <Header as='h2' dividing>A Fazer</Header>
+                                            <br/>
+                                            {
+                                                this.state.stories.stories && Object.keys(this.state.stories.stories)
+                                                    .map(
+                                                        key => {
+                                                            // isMember ? "$2.00" : "$10.00"
+                                                            return this.state.stories.stories[key].situacao === 'A fazer' ?
+                                                                <Storie id={key}
+                                                                    descricao={this.state.stories.stories[key].storiesDesc}
+                                                                    titulo={this.state.stories.stories[key].storiesTitulo}
+                                                                    dataInicio={this.state.stories.stories[key].dataInicio}
+                                                                    dataFim={this.state.stories.stories[key].dataFim}
+                                                                    situacao={this.state.stories.stories[key].situacao}
+                                                                    pontos={this.state.stories.stories[key].storiesPoint}
+                                                                /> : null
+
+                                                        })
+                                            }
+
+                                        </List.Item>
+                                    }
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column width={5}>
+                                <List>
+                                    {
+
+                                        <List.Item>
+
+                                            <Header as='h2' dividing>Fazendo</Header>
+                                            <br/>
+                                            {
+                                                this.state.stories.stories && Object.keys(this.state.stories.stories)
+                                                    .map(
+                                                        key => {
+                                                            // isMember ? "$2.00" : "$10.00"
+                                                            return this.state.stories.stories[key].situacao === 'Fazendo' ?
+                                                                <Storie id={key}
+                                                                    descricao={this.state.stories.stories[key].storiesDesc}
+                                                                    titulo={this.state.stories.stories[key].storiesTitulo}
+                                                                    dataInicio={this.state.stories.stories[key].dataInicio}
+                                                                    dataFim={this.state.stories.stories[key].dataFim}
+                                                                    situacao={this.state.stories.stories[key].situacao}
+                                                                    pontos={this.state.stories.stories[key].storiesPoint}
+                                                                /> : null
+
+                                                        })
+                                            }
+
+                                        </List.Item>
+                                    }
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column width={5}>
+                                <List>
+                                    {
+
+                                        <List.Item>
+
+                                            <Header as='h2' dividing>Concluida</Header>
+                                            <br/>
+                                            {
+                                                this.state.stories.stories && Object.keys(this.state.stories.stories)
+                                                    .map(
+                                                        key => {
+                                                            // isMember ? "$2.00" : "$10.00"
+                                                            return this.state.stories.stories[key].situacao === 'Concluida' ?
+                                                                <Storie id={key}
+                                                                    descricao={this.state.stories.stories[key].storiesDesc}
+                                                                    titulo={this.state.stories.stories[key].storiesTitulo}
+                                                                    dataInicio={this.state.stories.stories[key].dataInicio}
+                                                                    dataFim={this.state.stories.stories[key].dataFim}
+                                                                    situacao={this.state.stories.stories[key].situacao}
+                                                                    pontos={this.state.stories.stories[key].storiesPoint}
+                                                                /> : null
+
+                                                        })
+                                            }
+
+                                        </List.Item>
+                                    }
+                                </List>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
                 </Container>
             </div>
         )
