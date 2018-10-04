@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import HeaderCustom from './HeaderCustom';
 import { Container, Segment, Grid, Image, Header, List, Divider, Icon, Dimmer, Loader } from 'semantic-ui-react'
+import Storie from './Storie';
 
 class Stories extends Component {
 
@@ -41,6 +42,58 @@ class Stories extends Component {
             })
     }
 
+    renderStories(storie, id) {
+
+
+        return (
+            <span key={id}>
+                <Grid stackable>
+                    <Grid.Row>
+                        <Grid.Column width={5}>
+                            <Header as='h3'>A Fazer</Header>
+                            <List>
+                                {
+                                    storie.situacao === 'A fazer' &&
+                                    <List.Item>
+
+                                        {storie.storiesTitulo}
+
+                                    </List.Item>
+                                }
+                            </List>
+                        </Grid.Column>
+                        <Grid.Column width={5}>
+                            <Header as='h3'>Fazendo</Header>
+                            <List>
+                                {
+                                    storie.situacao === 'Fazendo' &&
+                                    <List.Item>
+
+                                        {storie.storiesTitulo}
+
+                                    </List.Item>
+                                }
+                            </List>
+                        </Grid.Column>
+                        <Grid.Column width={5}>
+                            <Header as='h3'>Concluída</Header>
+                            <List>
+                                {
+                                    storie.situacao === 'Concluida' &&
+                                    <List.Item>
+
+                                        {storie.storiesTitulo}
+
+                                    </List.Item>
+                                }
+                            </List>
+                        </Grid.Column>
+                    </Grid.Row>
+                </Grid>
+            </span>
+        )
+
+    }
 
 
     render() {
@@ -53,40 +106,34 @@ class Stories extends Component {
                 <HeaderCustom />
                 {/*<h2>{JSON.stringify(this.props)}</h2>*/}
                 <Container>
-                    <Header as='h2' dividing>Kanban</Header>
+                    <Segment piled>
+                    <Header as='h2'>Kanban</Header>
+                    </Segment>
                     <Header as='h3' >
                         {this.props.match.params.nome}
                         <Header.Subheader>{this.state.stories.descricao}</Header.Subheader>
                     </Header>
-                    <br/>
-                    <Grid stackable>
-                        <Grid.Row>
-                            <Grid.Column width={5}>
-                                <Header as='h3'>A Fazer</Header>
-                                <List>
-                                    <List.Item>Apples</List.Item>
-                                    <List.Item>Pears</List.Item>
-                                    <List.Item>Oranges</List.Item>
-                                </List>
-                            </Grid.Column>
-                            <Grid.Column width={5}>
-                                <Header as='h3'>Fazendo</Header>
-                                <List>
-                                    <List.Item>Apples</List.Item>
-                                    <List.Item>Pears</List.Item>
-                                    <List.Item>Oranges</List.Item>
-                                </List>
-                            </Grid.Column>
-                            <Grid.Column width={5}>
-                                <Header as='h3'>Concluída</Header>
-                                <List>
-                                    <List.Item>Apples</List.Item>
-                                    <List.Item>Pears</List.Item>
-                                    <List.Item>Oranges</List.Item>
-                                </List>
-                            </Grid.Column>
-                        </Grid.Row>
-                    </Grid>
+                    <br />
+
+                    {
+                        this.state.stories.stories && Object.keys(this.state.stories.stories)
+                            .map(
+                                key => {
+                                    console.log('key:', key);
+                                    console.log('storie: ', this.state.stories.stories[key]);
+                                    //return this.state.stories.stories[key], key);
+                                    return <Storie id={key}
+                                        descricao={this.state.stories.stories[key].storiesDesc}
+                                        titulo={this.state.stories.stories[key].storiesTitulo}
+                                        dataInicio={this.state.stories.stories[key].dataInicio}
+                                        dataFim={this.state.stories.stories[key].dataFim}
+                                        situacao={this.state.stories.stories[key].situacao}
+                                        pontos={this.state.stories.stories[key].storiesPoint}
+                                    />
+                                }
+                            )
+                    }
+
                 </Container>
             </div>
         )
