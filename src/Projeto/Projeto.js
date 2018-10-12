@@ -18,10 +18,15 @@ class Projeto extends Component {
 
     handleCloseRenomear = () => this.setState({ modalOpenRenomear: false })
 
-    handleOpenExcluir = () => this.setState({ modalOpenExcluir: true })
+    handleOpenExcluir = () => {
+        this.setState({ modalOpenExcluir: true })
+    }
 
-    handleCloseExcluir = () => this.setState({ modalOpenExcluir: false })
-
+    handleCloseExcluir = () => {
+        
+        this.setState({ modalOpenExcluir: false })
+        console.log('abriu');
+    }
     handleOpenFechar = () => this.setState({ modalOpenFechar: true })
 
     handleCloseFechar = () => this.setState({ modalOpenFechar: false })
@@ -29,10 +34,9 @@ class Projeto extends Component {
     render() {
 
         return (
-            <Grid.Column>
-
+            <Grid.Column >
                 <Segment >
-                    <Link to={`/kanban/${this.props.titulo}`}>
+                    <Link to={`/kanban/${this.props.titulo}/${this.props.id}`}>
                         <Header as='h3' color='teal'>
                         {this.props.titulo} <Icon name='sign in' size='mini' />
                         </Header>

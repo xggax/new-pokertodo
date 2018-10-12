@@ -9,8 +9,8 @@ const Storie = props => {
                 Poderíamos acessar o parâmetro id de dentro do componente respectivo à rota */
             }
             <Segment >
-                <List>
-                    <Header as='h3'>Título: {props.titulo}
+                <List size={"tiny"}>
+                    <Header as='h4'>Título: {props.titulo}
                         <Header.Subheader>
                             <List.Item>
                                 <p>Descrição: {props.descricao}</p>
@@ -29,6 +29,9 @@ const Storie = props => {
                             </ListItem>
                         </Header.Subheader>
                     </Header>
+                    <Link to=''><Icon name='clipboard outline' size='large' /></Link>
+                    <Link to=''><Icon name='edit outline' size='large' /></Link>
+                    <Link to=''><Icon name='delete' size='large' /></Link>
                 </List>
             </Segment>
         </span>

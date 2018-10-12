@@ -22,7 +22,7 @@ class App extends Component {
           <Route path='/projetos' component={ProjetosLista} />
           <Route path='/burndown' component={Burndown} />
           {/*Os parâmetros passados pelas rotas chegam no componente através da propriedade params*/}
-          <Route path='/kanban/:nome' component={Stories} />
+          <Route path='/kanban/:nome/:id' component={Stories} />
         </div>
       </BrowserRouter>
     );

@@ -15,6 +15,7 @@ import Rebase from 're-base';
   const db = firebase.database(firebaseInfo);
   const config = Rebase.createClass(db);
 
+  
   export const providers = {
     'google' : new firebase.auth.GoogleAuthProvider(),
   }

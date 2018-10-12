@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Container, Header, Segment } from 'semantic-ui-react';
+import { Grid, Container, Header, Segment, Button, Icon } from 'semantic-ui-react';
 
 import Projeto from './Projeto';
 import HeaderCustom from './HeaderCustom';
@@ -32,13 +32,11 @@ class ProjetosLista extends Component {
                         <Header as='h2'>Lista de Projetos</Header>
                     </Segment>
                     <Header as='h3'>Selecione o projeto</Header>
-                    {/*<p>{JSON.stringify(this.state.projetos)}</p>*/}
-
                     <Grid columns={5} stackable>
                         {
                             Object.keys(this.state.projetos)
                                 .map(key => {
-                                    return <Projeto key={key} titulo={this.state.projetos[key].nome} descricao={this.state.projetos[key].descricao} />
+                                    return <Projeto key={key} titulo={this.state.projetos[key].nome} descricao={this.state.projetos[key].descricao} id={key}/>
                                 }
 
                                 )
