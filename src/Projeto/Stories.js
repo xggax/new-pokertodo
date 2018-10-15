@@ -4,7 +4,7 @@ import { Link, Redirect } from 'react-router-dom';
 import config from './../config';
 
 import HeaderCustom from './HeaderCustom';
-import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider } from 'semantic-ui-react'
+import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress } from 'semantic-ui-react'
 import Storie from './Storie';
 import Participantes from './Participantes';
 
@@ -15,6 +15,8 @@ class Stories extends Component {
 
         this.state = {
             stories: {},
+            storyAtual: 0,
+            quantStories: 3,
             estaCarregando: false,
             titulo: '',
             descricao: '',
@@ -42,10 +44,11 @@ class Stories extends Component {
 
 
 
+
         this.setState({
             [name]: value,
-            situacao: 'A fazer',
-            storiesPoint: '?'
+            situacao: 'A fazer', 
+            storiesPoint: '?',
         })
     }
 
@@ -54,6 +57,7 @@ class Stories extends Component {
         e.preventDefault();
         // Array que vai guardar as chaves
         let item = [];
+        let id;
         //const projSubmit = this.props.match.params.nome;
         const idSubmit = this.props.match.params.id;
 
@@ -62,18 +66,19 @@ class Stories extends Component {
             .map(key => {
                 return item.push(key);
             });
-
-        const id = item.length;
-        console.log(idSubmit);
-        console.log(id);
+            id = item.length;
+            console.log('idSubmit', idSubmit);
+            console.log('id', id);
+        
         config.post(`projetos/${idSubmit}/stories/${id}`, {
             data: {
                 storiesTitulo: this.state.titulo,
                 storiesDesc: this.state.descricao,
                 dataInicio: this.state.dataInicio,
                 dataFim: this.state.dataFim,
-                situacao: this.state.situacao,
-                storiesPoint: this.state.storiesPoint,
+                situacao: 'A fazer', 
+                storiesPoint: '?',
+                
             },
             then(err) {
 
@@ -84,6 +89,7 @@ class Stories extends Component {
         });
         
         this.setState({
+            quantStories: 3,
             titulo: ' ',
             descricao:' ',
             dataInicio: ' ',
@@ -106,7 +112,10 @@ class Stories extends Component {
         axios
             .get(url)
             .then(dados => {
+                console.log('dados.data: ', dados.data);
+                console.log('ObjectKeys: ', Object.keys(dados.data)[0])
                 const chave = Object.keys(dados.data)[0];
+                console.log('chave: ', chave);
                 console.log('lista de stories:', dados.data[chave]);
                 this.setState({
                     estaCarregando: false,
@@ -123,7 +132,7 @@ class Stories extends Component {
 
 
     render() {
-
+        let item = [];
         if (this.state.estaCarregando) {
             return <p><Icon loading name='spinner' /> Carregando...</p>
         }
@@ -168,6 +177,8 @@ class Stories extends Component {
                                     <label>Data Fim</label>
                                     <input type='text' name='dataFim' placeholder='Data Fim' onChange={this.handleChange} />
                                     {this.state.dataFim}
+                                    {this.state.situacao}
+                                    {this.state.storiesPoint}
                                 </Form.Field>
                                 <Button>Cancelar</Button><Button type='submit'>Cadastrar</Button>
                             </Form>
@@ -194,7 +205,6 @@ class Stories extends Component {
                                                             // isMember ? "$2.00" : "$10.00"
 
                                                             return (this.state.stories.stories[key].situacao === 'A fazer' ?
-
                                                                 <Storie id={key}
                                                                     descricao={this.state.stories.stories[key].storiesDesc}
                                                                     titulo={this.state.stories.stories[key].storiesTitulo}
@@ -273,6 +283,9 @@ class Stories extends Component {
                             </Grid.Column>
                         </Grid.Row>
                     </Grid>
+                    <Divider />
+                    <Header as='h3'>Concluídas</Header>
+                    <Progress value={this.state.storyAtual} total={this.state.quantStories} progress='ratio'/>
                     <Divider />
                     <Participantes />
                     <Divider />
