@@ -15,19 +15,42 @@ class ProjetosLista extends Component {
             projetos: {},
             tituloNovo: '',
             descricaoNovo: '',
-            projetoStories: {}
-
+            projetoStories: {},
+            estaCarregando: false
         }
 
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount(){
-        this.syncBegin();
+    componentDidMount() {
+        //this.syncBegin();
+        this.carregaProjetos()
     }
 
-    syncBegin(){
+    carregaProjetos() {
+        //console.log('projeto: ', proj);
+        this.setState({
+            projetos: {},
+            estaCarregando: true,
+        })
+
+        const projetosRef = db.ref('projetos/');
+        projetosRef.on('value', (snapshot) => {
+            let projetos = snapshot.val();
+
+            console.log('projetos: ', projetos);
+
+            this.setState({
+                projetos: projetos,
+                estaCarregando: false,
+            });
+        });
+
+    }
+
+    /*
+    syncBegin() {
         config.syncState(
             'projetos', {
                 context: this,
@@ -35,6 +58,7 @@ class ProjetosLista extends Component {
                 asArray: false
             })
     }
+    */
 
     handleChange = event => {
 
@@ -51,27 +75,22 @@ class ProjetosLista extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        //const idSubmit = this.props.match.params.id;
-        
-        
-
-        //const projetosRef = db.ref(`projetos/${idSubmit}/stories/${id}`);
-        const projetosRef = db.ref(`projetos/`);
-        const projeto= {
+        const projetosRef = db.ref(`projetos`);
+        const projeto = {
             nome: this.state.tituloNovo,
             descricao: this.state.descricaoNovo,
             stories: this.state.projetoStories
-            
+
         }
 
         projetosRef.push(projeto);
+
         this.setState({
             projetoTitulo: '',
             projetoDescricao: '',
-            stories: {}
         });
 
-        //this.carregaStories(proj);
+        this.carregaProjetos();
     }
 
 
@@ -111,11 +130,11 @@ class ProjetosLista extends Component {
                         {
                             Object.keys(this.state.projetos)
                                 .map(key => {
-                                    return <Projeto key={key} 
-                                                    id={key}                
-                                                    titulo={this.state.projetos[key].nome} 
-                                                    descricao={this.state.projetos[key].descricao} 
-                                            />
+                                    return <Projeto key={key}
+                                        id={key}
+                                        titulo={this.state.projetos[key].nome}
+                                        descricao={this.state.projetos[key].descricao}
+                                    />
                                 }
 
                                 )
