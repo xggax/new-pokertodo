@@ -28,26 +28,7 @@ class ProjetosLista extends Component {
         this.carregaProjetos()
     }
 
-    carregaProjetos() {
-        //console.log('projeto: ', proj);
-        this.setState({
-            projetos: {},
-            estaCarregando: true,
-        })
-
-        const projetosRef = db.ref('projetos/');
-        projetosRef.on('value', (snapshot) => {
-            let projetos = snapshot.val();
-
-            console.log('projetos: ', projetos);
-
-            this.setState({
-                projetos: projetos,
-                estaCarregando: false,
-            });
-        });
-
-    }
+    
 
     /*
     syncBegin() {
@@ -88,11 +69,33 @@ class ProjetosLista extends Component {
         this.setState({
             projetoTitulo: '',
             projetoDescricao: '',
+            projetoStories: {}
         });
 
         this.carregaProjetos();
     }
 
+
+    carregaProjetos() {
+        //console.log('projeto: ', proj);
+        this.setState({
+            projetos: {},
+            estaCarregando: true,
+        })
+
+        const projetosRef = db.ref('projetos/');
+        projetosRef.on('value', (snapshot) => {
+            let projetos = snapshot.val();
+
+            console.log('projetos: ', projetos);
+
+            this.setState({
+                projetos: projetos,
+                estaCarregando: false,
+            });
+        });
+
+    }
 
     render() {
         return (
