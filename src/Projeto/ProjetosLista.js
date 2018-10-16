@@ -20,15 +20,21 @@ class ProjetosLista extends Component {
 
         }
 
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+    }
+
+    componentDidMount(){
+        this.syncBegin();
+    }
+
+    syncBegin(){
         config.syncState(
             'projetos', {
                 context: this,
                 state: 'projetos',
                 asArray: false
             })
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
     handleChange = event => {

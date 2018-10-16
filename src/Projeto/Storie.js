@@ -10,6 +10,7 @@ const Storie = props => {
             }
             <Segment >
                 <List size={"tiny"}>
+                    <p>ID:{props.id}</p>
                     <Header as='h4'>Título: {props.titulo}
                         <Header.Subheader>
                             <List.Item>
