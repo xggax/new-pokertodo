@@ -14,6 +14,7 @@ class Stories extends Component {
         super(props)
 
         this.state = {
+            descProj: '',
             stories: {},
             storyAtual: 0,
             quantStories: 3,
@@ -77,7 +78,7 @@ class Stories extends Component {
             storiesPoint: '',
         });
 
-        //this.carregaStories(proj);
+        this.carregaStories(proj);
 
     }
 
@@ -94,12 +95,14 @@ class Stories extends Component {
             console.log('projetos: ', projetos);
             let stories = projetos;
             let newState = {};
+            let descProj = '';
 
             for (let key in stories) {
                 console.log(stories[key]);
                 if(stories[key].nome === proj){
                     console.log('É esse aqui:', stories[key]);
                     newState = stories[key].stories;
+                    descProj =  stories[key].descricao;
                 }
             }
 
@@ -107,7 +110,8 @@ class Stories extends Component {
             
             this.setState({
                 stories: newState,
-                estaCarregando: false
+                estaCarregando: false,
+                descProj: descProj
             });
         });
 
@@ -157,7 +161,7 @@ render() {
                 </Segment>
                 <Header as='h2' >
                     {this.props.match.params.nome}
-                    <Header.Subheader>{this.state.stories.descricao}</Header.Subheader>
+                    <Header.Subheader>{this.state.descProj}</Header.Subheader>
                 </Header>
                 <Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />
                 <Modal trigger={
@@ -271,7 +275,7 @@ render() {
 
                                     <List.Item>
 
-                                        <Header as='h2' dividing>Concluida</Header>
+                                        <Header as='h2' dividing>Concluída</Header>
                                         <br />
                                         {
                                             this.state.stories && Object.keys(this.state.stories)

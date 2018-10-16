@@ -3,7 +3,7 @@ import { Grid, Container, Header, Segment, Button, Icon, Modal, Form } from 'sem
 
 import Projeto from './Projeto';
 import HeaderCustom from './HeaderCustom';
-import config from './../config';
+import config, { auth, providers, db } from './../config';
 
 
 class ProjetosLista extends Component {
@@ -13,10 +13,9 @@ class ProjetosLista extends Component {
 
         this.state = {
             projetos: {},
-            titulo: '',
-            descricao: '',
-            situacao: '',
-            storiesPoint: ''
+            tituloNovo: '',
+            descricaoNovo: '',
+            projetoStories: {}
 
         }
 
@@ -38,9 +37,41 @@ class ProjetosLista extends Component {
     }
 
     handleChange = event => {
+
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value,
+            projetoStories: {},
+        })
+
     }
 
     handleSubmit = event => {
+        event.preventDefault();
+        //const idSubmit = this.props.match.params.id;
+        
+        
+
+        //const projetosRef = db.ref(`projetos/${idSubmit}/stories/${id}`);
+        const projetosRef = db.ref(`projetos/`);
+        const projeto= {
+            nome: this.state.tituloNovo,
+            descricao: this.state.descricaoNovo,
+            stories: this.state.projetoStories
+            
+        }
+
+        projetosRef.push(projeto);
+        this.setState({
+            projetoTitulo: '',
+            projetoDescricao: '',
+            stories: {}
+        });
+
+        //this.carregaStories(proj);
     }
 
 
@@ -63,11 +94,13 @@ class ProjetosLista extends Component {
                             <Form onSubmit={this.handleSubmit}>
                                 <Form.Field>
                                     <label>Título</label>
-                                    <input type='text' name='titulo' placeholder='Título' onChange={this.handleChange} />
+                                    <input type='text' name='tituloNovo' placeholder='Título' onChange={this.handleChange} />
+                                    {this.state.tituloNovo}
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Descrição</label>
-                                    <textarea type='text' name='descricao' rows='3' onChange={this.handleChange} />
+                                    <textarea type='text' name='descricaoNovo' rows='3' onChange={this.handleChange} />
+                                    {this.state.descricaoNovo}
                                 </Form.Field>
                                 <Button>Cancelar</Button><Button type='submit'>Cadastrar</Button>
                             </Form>
@@ -78,7 +111,11 @@ class ProjetosLista extends Component {
                         {
                             Object.keys(this.state.projetos)
                                 .map(key => {
-                                    return <Projeto key={key} titulo={this.state.projetos[key].nome} descricao={this.state.projetos[key].descricao} id={key} />
+                                    return <Projeto key={key} 
+                                                    id={key}                
+                                                    titulo={this.state.projetos[key].nome} 
+                                                    descricao={this.state.projetos[key].descricao} 
+                                            />
                                 }
 
                                 )
