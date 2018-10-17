@@ -110,7 +110,8 @@ class ProjetosLista extends Component {
                                     <textarea type='text' name='descricaoNovo' rows='3' onChange={this.handleChange} />
                                     {this.state.descricaoNovo}
                                 </Form.Field>
-                                <Button>Cancelar</Button><Button type='submit'>Cadastrar</Button>
+                                <Button>Cancelar</Button>
+                                <Button type='submit'>Cadastrar</Button>
                             </Form>
                         </Modal.Content>
                     </Modal>

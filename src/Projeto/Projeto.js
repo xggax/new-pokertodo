@@ -8,16 +8,45 @@ class Projeto extends Component {
         super(props)
 
         this.state = {
+            nomeNovo: '',
             modalOpenRenomear: false,
             modalOpenExcluir: false,
             modalOpenFechar: false
         }
+        this.handleChange = this.handleChange.bind(this);
     }
+
+    handleChange = event => {
+
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+
+        this.setState({
+            [name]: value,
+        })
+    }
+
+    
 
     removeItem(itemId) {
         const projetoRef = db.ref(`/projetos/${itemId}`);
         projetoRef.remove();
-      }
+    }
+
+    renomearItem(itemId) { 
+        const projetoRef = db.ref(`/projetos/${itemId}`);
+        console.log('descricaoProps: ', this.props.descricao)
+
+        projetoRef.update({
+            nome: this.state.nomeNovo,
+        });
+        
+        this.setState({
+            nomeNovo: '',     
+        });
+        
+}
 
     handleOpenRenomear = () => this.setState({ modalOpenRenomear: true })
 
@@ -28,7 +57,7 @@ class Projeto extends Component {
     }
 
     handleCloseExcluir = () => {
-        
+
         this.setState({ modalOpenExcluir: false })
         console.log('abriu');
     }
@@ -43,7 +72,7 @@ class Projeto extends Component {
                 <Segment >
                     <Link to={`/kanban/${this.props.titulo}/${this.props.id}`}>
                         <Header as='h3' color='teal'>
-                        {this.props.titulo} <Icon name='sign in' size='mini' />
+                            {this.props.titulo} <Icon name='sign in' size='mini' />
                         </Header>
                     </Link>
                     <List>
@@ -57,7 +86,6 @@ class Projeto extends Component {
                                 <Header icon='info circle' content='Sobre este projeto' />
                                 <Modal.Content>
                                     <Modal.Description>
-                                        <Header>Projeto 1</Header>
                                         <h3>{this.props.descricao}</h3>
                                     </Modal.Description>
                                 </Modal.Content>
@@ -77,13 +105,13 @@ class Projeto extends Component {
                             >
                                 <Header icon='edit outline' content='Renomear Projeto' />
                                 <Modal.Content>
-                                    <Input></Input>
+                                    <Input type='text' name='nomeNovo' placeholder='Novo Nome' onChange={this.handleChange} />
                                 </Modal.Content>
                                 <Modal.Actions>
                                     <Button onClick={this.handleCloseRenomear} basic color='red' inverted>
                                         <Icon name='remove' /> Cancelar
                                     </Button>
-                                    <Button color='green' inverted>
+                                    <Button onClick={() => this.renomearItem(this.props.id)} color='green' inverted>
                                         <Icon name='checkmark' /> Confirmar
                                     </Button>
                                 </Modal.Actions>
