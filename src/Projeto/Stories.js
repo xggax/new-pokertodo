@@ -114,31 +114,6 @@ class Stories extends Component {
                 descProj: descProj
             });
         });
-
-
-    /*
-    this.setState({
-        estaCarregando: true,
-        stories: {}
-    })
-    const url = `https://newpokertodo.firebaseio.com/projetos.json?orderBy="nome"&equalTo="${proj}"`;
-    axios
-        .get(url)
-        .then(dados => {
-            console.log('dados.data: ', dados.data);
-            console.log('ObjectKeys: ', Object.keys(dados.data)[0])
-            const chave = Object.keys(dados.data)[0];
-            console.log('chave: ', chave);
-            console.log('lista de stories:', dados.data[chave]);
-            this.setState({
-                estaCarregando: false,
-                stories: dados.data[chave]
-            })
-        })
-        .catch(err => {
-            console.log('erro');
-        })
-        */
 }
 
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Segment, Header, Icon, List, Modal, Button, Input } from 'semantic-ui-react';
-
+import config, { auth, providers, db } from './../config';
 
 class Projeto extends Component {
     constructor(props) {
@@ -13,6 +13,11 @@ class Projeto extends Component {
             modalOpenFechar: false
         }
     }
+
+    removeItem(itemId) {
+        const projetoRef = db.ref(`/projetos/${itemId}`);
+        projetoRef.remove();
+      }
 
     handleOpenRenomear = () => this.setState({ modalOpenRenomear: true })
 
@@ -101,10 +106,10 @@ class Projeto extends Component {
                                 </h4>
                                 </Modal.Content>
                                 <Modal.Actions>
-                                    <Button onClick={this.handleCloseExcluir} basic color='red' inverted>
+                                    <Button basic color='red' inverted>
                                         <Icon name='remove' /> Não
                             </Button>
-                                    <Button color='green' inverted>
+                                    <Button onClick={() => this.removeItem(this.props.id)} color='green' inverted>
                                         <Icon name='checkmark' /> Sim
                             </Button>
                                 </Modal.Actions>

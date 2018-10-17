@@ -24,22 +24,8 @@ class ProjetosLista extends Component {
     }
 
     componentDidMount() {
-        //this.syncBegin();
         this.carregaProjetos()
     }
-
-    
-
-    /*
-    syncBegin() {
-        config.syncState(
-            'projetos', {
-                context: this,
-                state: 'projetos',
-                asArray: false
-            })
-    }
-    */
 
     handleChange = event => {
 
@@ -131,9 +117,10 @@ class ProjetosLista extends Component {
                     <br /><br /><br />
                     <Grid columns={5} stackable>
                         {
-                            Object.keys(this.state.projetos)
+                            this.state.projetos && Object.keys(this.state.projetos)
                                 .map(key => {
-                                    return <Projeto key={key}
+                                    return <Projeto 
+                                        key={key}
                                         id={key}
                                         titulo={this.state.projetos[key].nome}
                                         descricao={this.state.projetos[key].descricao}
