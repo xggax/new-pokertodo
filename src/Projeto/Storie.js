@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Grid, Segment, Header, Icon, ListItem, List } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, ListItem, List, Button } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import config, { auth, providers, db } from './../config';
 
@@ -10,8 +10,10 @@ class Storie extends Component {
     }
 
     //Primeiro preciso codar os projetos pra receber os parametros certos pra exluir usando a ID do projeto
-    removeItem(itemId) {
-        const itemRef = db.ref(`/projetos/`);
+    removeItem(itemId, projId) {
+        console.log('id da story: ', itemId);
+        console.log('id do projeto: ', itemId);
+        const itemRef = db.ref(`/projetos/${projId}/stories/${itemId}`);
         itemRef.remove();
       }
 
@@ -46,7 +48,7 @@ class Storie extends Component {
                         </Header>
                         <Link to=''><Icon name='clipboard outline' size='large' /></Link>
                         <Link to=''><Icon name='edit outline' size='large' /></Link>
-                        <button onClick={() => this.removeItem(this.props.id)}><Icon name='delete' size='large' /></button>
+                        <Button onClick={() => this.removeItem(this.props.id, this.props.idProj)}><Icon name='delete' size='large' /></Button>
                     </List>
                 </Segment>
             </span >

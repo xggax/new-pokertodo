@@ -24,7 +24,7 @@ class Stories extends Component {
             dataInicio: '',
             dataFim: '',
             situacao: '',
-            storiesPoint: ''
+            storyPoint: ''
         }
 
         this.handleChange = this.handleChange.bind(this);
@@ -47,7 +47,7 @@ class Stories extends Component {
         this.setState({
             [name]: value,
             situacao: 'A fazer',
-            storiesPoint: '?',
+            storyPoint: '?',
         })
     }
 
@@ -63,19 +63,20 @@ class Stories extends Component {
             storiesTitulo: this.state.titulo,
             storiesDesc: this.state.descricao,
             dataInicio: this.state.dataInicio,
-            dataFim: this.state.dataInicio,
+            dataFim: this.state.dataFim,
             situacao: this.state.situacao,
-            storiesPoint: this.state.storiesPoint,
+            storyPoint: this.state.storyPoint,
         }
 
         storiesRef.push(story);
+        
         this.setState({
-            storiesTitulo: '',
-            storiesDesc: '',
+            titulo: '',
+            descricao: '',
             dataInicio: '',
             dataFim: '',
             situacao: '',
-            storiesPoint: '',
+            storyPoint: '',
         });
 
         this.carregaStories(proj);
@@ -150,24 +151,18 @@ render() {
                             <Form.Field>
                                 <label>Título</label>
                                 <input type='text' name='titulo' placeholder='Título' onChange={this.handleChange} />
-                                {this.state.titulo}
                             </Form.Field>
                             <Form.Field>
                                 <label>Descrição</label>
                                 <textarea type='text' name='descricao' rows='3' onChange={this.handleChange} />
-                                {this.state.descricao}
                             </Form.Field>
                             <Form.Field>
                                 <label>Data Início</label>
                                 <input type='text' name='dataInicio' placeholder='Data Início' onChange={this.handleChange} />
-                                {this.state.dataInicio}
                             </Form.Field>
                             <Form.Field>
                                 <label>Data Fim</label>
                                 <input type='text' name='dataFim' placeholder='Data Fim' onChange={this.handleChange} />
-                                {this.state.dataFim}
-                                {this.state.situacao}
-                                {this.state.storiesPoint}
                             </Form.Field>
                             <Button>Cancelar</Button><Button type='submit'>Cadastrar</Button>
                         </Form>
@@ -197,6 +192,7 @@ render() {
                                                             <Storie
                                                                 id = {key}
                                                                 key = {key}
+                                                                idProj = {this.props.match.params.id}
                                                                 descricao={this.state.stories[key].storiesDesc}
                                                                 titulo={this.state.stories[key].storiesTitulo}
                                                                 dataInicio={this.state.stories[key].dataInicio}
@@ -229,6 +225,7 @@ render() {
                                                             <Storie 
                                                                 id = {key}
                                                                 key = {key}
+                                                                idProj = {this.props.match.params.id}
                                                                 descricao={this.state.stories[key].storiesDesc}
                                                                 titulo={this.state.stories[key].storiesTitulo}
                                                                 dataInicio={this.state.stories[key].dataInicio}
@@ -261,6 +258,7 @@ render() {
                                                             <Storie 
                                                                 key={key}
                                                                 id={key}
+                                                                idProj = {this.props.match.params.id}
                                                                 descricao={this.state.stories[key].storiesDesc}
                                                                 titulo={this.state.stories[key].storiesTitulo}
                                                                 dataInicio={this.state.stories[key].dataInicio}
