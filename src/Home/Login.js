@@ -14,8 +14,11 @@ class Login extends Component {
         this.state = {
             usuario: {},
             estaLogado: false
-        }
+        }  
 
+    }
+
+    componentDidMount(){
         auth.onAuthStateChanged((usuario) => {
             if (usuario) {
                 console.log(usuario);
@@ -30,7 +33,6 @@ class Login extends Component {
                 })
             }
         })
-
     }
 
 
@@ -49,23 +51,24 @@ class Login extends Component {
                 <div className='login-form'>
                     <HeaderCustom />
                     {/*
-      Heads up! The styles below are necessary for the correct render of this example.
-      You can do same with CSS, the main idea is that all the elements up to the `Grid`
-      below must have a height of 100%.
-    */}
+                    Heads up! The styles below are necessary for the correct render of this example.
+                    You can do same with CSS, the main idea is that all the elements up to the `Grid`
+                    below must have a height of 100%.
+                    */}
                     <style>{`
-      body > div,
-      body > div > div,
-      body > div > div > div.login-form {
-        height: 100%;
-      }
-    `}</style>
+                            body > div,
+                            body > div > div,
+                            body > div > div > div.login-form {
+                                height: 100%;
+                            }
+                            `}
+                    </style>
 
                     <Grid textAlign='center' style={{ height: '75%' }} verticalAlign='middle'>
                         <Grid.Column style={{ maxWidth: 450 }}>
                             <Header as='h2' color='teal' textAlign='center'>
                                 Faça Login na sua conta
-                </Header>
+                            </Header>
                             <Form size='large'>
                                 <Segment stacked>
                                     <Form.Input fluid icon='user' iconPosition='left' placeholder='Endereço de E-mail' />
@@ -85,7 +88,7 @@ class Login extends Component {
                                     ou
                         <Divider />
 
-                                    <Button color='google plus' fluid size='large' onClick={ () => this.autenticarGoogle('google')}>
+                                    <Button color='google plus' fluid size='large' onClick={() => this.autenticarGoogle('google')}>
                                         Login com o google
                         </Button>
 

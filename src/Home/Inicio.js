@@ -20,6 +20,27 @@ class Inicio extends Component {
             if (usuario) {
                 console.log(usuario);
                 this.setState({
+                    usuario:usuario,
+                    estaLogado: true,
+                })
+            } else {
+                console.log('nao logou');
+                this.setState({
+                    estaLogado: false,
+                })
+            }
+        })
+    }
+
+    /*componentDidMount() {
+        this.persistindo();
+    }
+
+    persistindo() {
+        auth.onAuthStateChanged((usuario) => {
+            if (usuario) {
+                console.log(usuario);
+                this.setState({
                     usuario,
                     estaLogado: true,
                 })
@@ -30,9 +51,8 @@ class Inicio extends Component {
                 })
             }
         })
-
-
     }
+    */
 
     render() {
         return (

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
 import { Link, Redirect } from 'react-router-dom';
-import firebase from 'firebase';
+import config, { auth, providers } from './../config';
 
 class HeaderCustom extends Component {
 
@@ -17,7 +17,7 @@ class HeaderCustom extends Component {
 
     componentDidMount() {
 
-        const usuarioAtual = firebase.auth().currentUser;
+        const usuarioAtual = auth.currentUser;
         console.log(usuarioAtual);
 
         if (usuarioAtual !== null) {
@@ -33,14 +33,15 @@ class HeaderCustom extends Component {
     }
 
     deslogarUsuario() {
-        firebase
-            .auth()
+            auth
             .signOut()
             .then(() => {
-                this.setState( {
+                
+                this.setState({
                     usuario: '',
                     estaLogado: false,
                 })
+
                 console.log('Usuario deslogado com sucesso');
             })
             .catch(error => {
@@ -67,7 +68,6 @@ class HeaderCustom extends Component {
                                     <Menu.Item><strong>PokerToDo</strong></Menu.Item>
                                     <Menu.Item as={Link} to='/'>Home</Menu.Item>
                                     <Menu.Item as={Link} to='/projetos'>Projetos</Menu.Item>
-                                    <Menu.Item as={Link} to='/'>+Novo</Menu.Item>
                                     <Menu.Menu position='right'>
                                         <Menu.Item><Image avatar src={foto} /></Menu.Item>
                                         <Dropdown item text={nome}>

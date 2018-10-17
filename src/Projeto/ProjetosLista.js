@@ -12,6 +12,7 @@ class ProjetosLista extends Component {
         super(props)
 
         this.state = {
+            username: '',
             projetos: {},
             tituloNovo: '',
             descricaoNovo: '',
