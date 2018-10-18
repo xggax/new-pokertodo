@@ -52,15 +52,10 @@ class Projeto extends Component {
 
     handleCloseRenomear = () => this.setState({ modalOpenRenomear: false })
 
-    handleOpenExcluir = () => {
-        this.setState({ modalOpenExcluir: true })
-    }
+    handleOpenExcluir = () => {this.setState({ modalOpenExcluir: true })}
 
-    handleCloseExcluir = () => {
-
-        this.setState({ modalOpenExcluir: false })
-        console.log('abriu');
-    }
+    handleCloseExcluir = () => {this.setState({ modalOpenExcluir: false })}
+    
     handleOpenFechar = () => this.setState({ modalOpenFechar: true })
 
     handleCloseFechar = () => this.setState({ modalOpenFechar: false })

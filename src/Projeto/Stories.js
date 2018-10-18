@@ -136,8 +136,11 @@ render() {
                     <Header as='h2'>Kanban</Header>
                 </Segment>
                 <Header as='h2' >
-                    {this.props.match.params.nome}
-                    <Header.Subheader>{this.state.descProj}</Header.Subheader>
+                    Projeto: {this.props.match.params.nome}
+                    <Header.Subheader>Descrição: {this.state.descProj}</Header.Subheader>
+                    <Divider />
+                    <Participantes />
+                    <Divider />
                 </Header>
                 <Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />
                 <Modal trigger={
@@ -279,9 +282,6 @@ render() {
                 <Divider />
                 <Header as='h3'>Concluídas</Header>
                 <Progress value={this.state.storyAtual} total={this.state.quantStories} progress='ratio' />
-                <Divider />
-                <Participantes />
-                <Divider />
             </Container>
         </div>
     )
