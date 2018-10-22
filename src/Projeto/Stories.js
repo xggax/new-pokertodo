@@ -238,6 +238,7 @@ render() {
                                                                 dataFim={this.state.stories[key].dataFim}
                                                                 situacao={this.state.stories[key].situacao}
                                                                 pontos={this.state.stories[key].storyPoint}
+                                                                handleLoad={this.carregaStories}
                                                             /> : null)
 
                                                     })
@@ -271,6 +272,7 @@ render() {
                                                                 dataFim={this.state.stories[key].dataFim}
                                                                 situacao={this.state.stories[key].situacao}
                                                                 pontos={this.state.stories[key].storyPoint}
+                                                                handleLoad={this.carregaStories}
                                                             /> : null)
 
                                                     })
