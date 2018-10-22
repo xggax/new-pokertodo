@@ -147,7 +147,7 @@ render() {
                     <Participantes />
                     <Divider />
                 </Header>
-                <Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />
+                {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
                 <Button onClick={this.show} floated='left' color='teal'>
                     <Icon name='plus' />Nova Story
                 </Button>
