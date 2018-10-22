@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
-import { Link, Redirect } from 'react-router-dom';
-import config, { auth, providers } from './../config';
+import { Link } from 'react-router-dom';
+import { auth } from './../config';
 
 class HeaderCustom extends Component {
 

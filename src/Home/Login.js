@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Divider, Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
-import { Link, Redirect } from 'react-router-dom';
+import { Button, Form, Grid, Header, Segment } from 'semantic-ui-react'
+import { Redirect } from 'react-router-dom';
 
-import config, { auth, providers } from './../config';
+import { auth, providers } from './../config';
 import HeaderCustom from '../Projeto/HeaderCustom';
 
 

@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
-import axios from 'axios';
-import { Link, Redirect } from 'react-router-dom';
-import config, { auth, providers, db } from './../config';
+import { db } from './../config';
 
 import HeaderCustom from './HeaderCustom';
 import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress } from 'semantic-ui-react'
-import Storie from './Storie';
 import Participantes from './Participantes';
+import Story from './Story';
 
 class Stories extends Component {
 
@@ -194,7 +192,7 @@ render() {
                                                 .map(
                                                     key => {
                                                         return (this.state.stories[key].situacao === 'A fazer' ?
-                                                            <Storie
+                                                            <Story
                                                                 key = {key}
                                                                 id = {key}
                                                                 idProj = {this.props.match.params.id}
@@ -228,7 +226,7 @@ render() {
                                                     key => {
                                                         // isMember ? "$2.00" : "$10.00"
                                                         return (this.state.stories[key].situacao === 'Fazendo' ?
-                                                            <Storie 
+                                                            <Story 
                                                                 id = {key}
                                                                 key = {key}
                                                                 idProj = {this.props.match.params.id}
@@ -262,7 +260,7 @@ render() {
                                                     key => {
                                                         // isMember ? "$2.00" : "$10.00"
                                                         return (this.state.stories[key].situacao === 'Concluida' ?
-                                                            <Storie 
+                                                            <Story 
                                                                 key={key}
                                                                 id={key}
                                                                 idProj = {this.props.match.params.id}

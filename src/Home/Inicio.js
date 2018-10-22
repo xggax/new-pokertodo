@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Container, Header, Segment } from 'semantic-ui-react';
-import config, { auth, providers } from './../config';
-import { Redirect } from 'react-router-dom';
+import { auth } from './../config';
 
 import Navegacao from './Navegacao';
 import HeaderCustom from '../Projeto/HeaderCustom';

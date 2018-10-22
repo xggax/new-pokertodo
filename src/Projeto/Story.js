@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
-import { Grid, Segment, Header, Icon, ListItem, List, Button, Modal, Input, Form, TextArea, Message} from 'semantic-ui-react';
+import { Segment, Header, Icon, ListItem, List, Button, Modal, Input, Form, TextArea} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import config, { auth, providers, db } from './../config';
+import { db } from '../config';
 
-class Storie extends Component {
+class Story extends Component {
     constructor(props) {
         super(props)
 
@@ -187,4 +187,4 @@ class Storie extends Component {
     }
 }
 
-export default Storie;
+export default Story;
