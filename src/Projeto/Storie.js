@@ -140,7 +140,6 @@ class Storie extends Component {
                             dimmer='blurring'                      
                         >
                             <Header icon='edit outline' content='Atualizar Story' />
-                            <Message color='yellow'>*Deixe o campo em branco vazio se não quiser alterá-lo</Message>
                                 <Modal.Content>
                                     <Form onSubmit={this.handleUpdate}>
                                         <Form.Field>
