@@ -21,13 +21,13 @@ class Login extends Component {
     componentDidMount(){
         auth.onAuthStateChanged((usuario) => {
             if (usuario) {
-                console.log(usuario);
+               // console.log(usuario);
                 this.setState({
                     usuario,
                     estaLogado: true,
                 })
             } else {
-                console.log('nao logado');
+              //  console.log('nao logado');
                 this.setState({
                     estaLogado: false,
                 })
@@ -37,7 +37,7 @@ class Login extends Component {
 
 
     autenticarGoogle(provider) {
-        console.log(provider);
+       // console.log(provider);
         auth.signInWithPopup(providers[provider]);
 
     }
@@ -71,7 +71,7 @@ class Login extends Component {
                             </Header>
                             <Form size='large'>
                                 <Segment stacked>
-                                    <Form.Input fluid icon='user' iconPosition='left' placeholder='Endereço de E-mail' />
+                                    {/*<Form.Input fluid icon='user' iconPosition='left' placeholder='Endereço de E-mail' />
                                     <Form.Input
                                         fluid
                                         icon='lock'
@@ -86,7 +86,7 @@ class Login extends Component {
 
                                     <Divider />
                                     ou
-                        <Divider />
+                        <Divider /> */}
 
                                     <Button color='google plus' fluid size='large' onClick={() => this.autenticarGoogle('google')}>
                                         Login com o google
@@ -94,12 +94,13 @@ class Login extends Component {
 
                                 </Segment>
                             </Form>
+                            {/*}
                             <Message>
                                 Novo? <Link to='/registrar'>Cadastre-se</Link>
                             </Message>
                             <Message>
                                 Esqueceu sua senha? <Link to='/recuperar'>Recuperar</Link>
-                            </Message>
+                    </Message>*/}
                         </Grid.Column>
                     </Grid>
                 </div>

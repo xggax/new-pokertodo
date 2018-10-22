@@ -3,7 +3,7 @@ import { Grid, Container, Header, Segment, Button, Icon, Modal, Form } from 'sem
 
 import Projeto from './Projeto';
 import HeaderCustom from './HeaderCustom';
-import config, { auth, providers, db } from './../config';
+import { db } from './../config';
 
 
 class ProjetosLista extends Component {
@@ -17,14 +17,12 @@ class ProjetosLista extends Component {
             tituloNovo: '',
             descricaoNovo: '',
             projetoStories: {},
-            estaCarregando: false
+            estaCarregando: false,
+            open: false
         }
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.carregaProjetos()
     }
 
@@ -60,10 +58,11 @@ class ProjetosLista extends Component {
         });
 
         this.carregaProjetos();
+        this.hide();
     }
 
 
-    carregaProjetos() {
+    carregaProjetos = () => {
         //console.log('projeto: ', proj);
         this.setState({
             projetos: {},
@@ -74,7 +73,7 @@ class ProjetosLista extends Component {
         projetosRef.on('value', (snapshot) => {
             let projetos = snapshot.val();
 
-            console.log('projetos: ', projetos);
+         //   console.log('projetos: ', projetos);
 
             this.setState({
                 projetos: projetos,
@@ -83,6 +82,15 @@ class ProjetosLista extends Component {
         });
 
     }
+
+    hide = () => {
+       this.setState({open: false})
+    }
+
+    show = () => {
+       this.setState({open: true})
+    }
+    
 
     render() {
         return (
@@ -93,25 +101,22 @@ class ProjetosLista extends Component {
                         <Header as='h2'>Lista de Projetos</Header>
                     </Segment>
                     <Header as='h3'>Selecione o projeto</Header>
-                    <Modal trigger={
-                        <Button floated='left'
-                            color='teal'
-                        >
-                            <Icon name='plus' /> Novo Projeto</Button>}>
+                    <Button onClick={this.show} floated='left' color='teal'>
+                        <Icon name='plus' /> Novo Projeto
+                    </Button>
+                    <Modal open={this.state.open}>
                         <Modal.Header color='teal'>Cadastrar Novo Projeto</Modal.Header>
                         <Modal.Content>
                             <Form onSubmit={this.handleSubmit}>
                                 <Form.Field>
                                     <label>Título</label>
                                     <input type='text' name='tituloNovo' placeholder='Título' onChange={this.handleChange} />
-                                    {this.state.tituloNovo}
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Descrição</label>
                                     <textarea type='text' name='descricaoNovo' rows='3' onChange={this.handleChange} />
-                                    {this.state.descricaoNovo}
                                 </Form.Field>
-                                <Button>Cancelar</Button>
+                                <Button onClick={this.hide}>Cancelar</Button>
                                 <Button type='submit'>Cadastrar</Button>
                             </Form>
                         </Modal.Content>

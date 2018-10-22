@@ -18,13 +18,13 @@ class Inicio extends Component {
 
         auth.onAuthStateChanged((usuario) => {
             if (usuario) {
-                console.log(usuario);
+              //  console.log(usuario);
                 this.setState({
                     usuario:usuario,
                     estaLogado: true,
                 })
             } else {
-                console.log('nao logou');
+               // console.log('nao logou');
                 this.setState({
                     estaLogado: false,
                 })

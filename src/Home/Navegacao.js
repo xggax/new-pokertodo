@@ -17,9 +17,9 @@ const Navegacao = props => {
                                 <Dropdown.Item>
                                     <Link to='/login'>Login</Link>
                                 </Dropdown.Item>
-                                <Dropdown.Item>
+                                {/*<Dropdown.Item>
                                     <Link to='/registrar'>Registrar</Link>
-                                </Dropdown.Item>
+                                </Dropdown.Item>*/}
                             </Dropdown.Menu>
                         </Dropdown>
                     </Menu.Menu>

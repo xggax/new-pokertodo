@@ -14,6 +14,7 @@ class Stories extends Component {
         super(props)
 
         this.state = {
+            open: false,
             descProj: '',
             stories: {},
             storyAtual: 0,
@@ -27,15 +28,12 @@ class Stories extends Component {
             storyPoint: ''
         }
 
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    componentDidMount() {
+    componentDidMount = () => {
         this.carregaStories(this.props.match.params.nome);
 
     }
-
 
     // receber os eventos de mudança de estado pra cada field do formulário e armazenar nos meus estados
     handleChange = event => {
@@ -52,7 +50,7 @@ class Stories extends Component {
     }
 
     //Enviar o formulário e guardar a nova storie no Banco de dados
-    handleSubmit(e) {
+    handleSubmit = e => {
         e.preventDefault();
         const idSubmit = this.props.match.params.id;
         const proj = this.props.match.params.nome;
@@ -67,7 +65,7 @@ class Stories extends Component {
             situacao: this.state.situacao,
             storyPoint: this.state.storyPoint,
         }
-
+      //  console.log('===============', 'criou', story)
         storiesRef.push(story);
         
         this.setState({
@@ -80,28 +78,26 @@ class Stories extends Component {
         });
 
         this.carregaStories(proj);
-
+        this.hide();
     }
 
-    carregaStories(proj) {
-        console.log('projeto: ', proj);
+    carregaStories = (proj) => {
+      //  console.log('================projeto: ', proj);
         this.setState({
-            stories: {},
             estaCarregando: true,
         })
         //const storiesRef = db.ref(`projetos/${proj}/stories/`);
         const storiesRef = db.ref('projetos');
         storiesRef.on('value', (snapshot) => {
-            let projetos = snapshot.val();
-            console.log('projetos: ', projetos);
-            let stories = projetos;
+            let stories = snapshot.val();
+        //    console.log('projetos: ', stories);
             let newState = {};
             let descProj = '';
 
             for (let key in stories) {
-                console.log(stories[key]);
+           //     console.log(stories[key]);
                 if(stories[key].nome === proj){
-                    console.log('É esse aqui:', stories[key]);
+            //        console.log('É esse aqui:', stories[key]);
                     newState = stories[key].stories;
                     descProj =  stories[key].descricao;
                 }
@@ -115,7 +111,16 @@ class Stories extends Component {
                 descProj: descProj
             });
         });
-}
+    }
+
+    
+    hide = () => {
+        this.setState({open: false})
+     }
+ 
+     show = () => {
+        this.setState({open: true})
+     }
 
 
 
@@ -143,11 +148,10 @@ render() {
                     <Divider />
                 </Header>
                 <Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />
-                <Modal trigger={
-                    <Button floated='left'
-                        color='teal'
-                    >
-                        <Icon name='plus' /> Nova Story</Button>}>
+                <Button onClick={this.show} floated='left' color='teal'>
+                    <Icon name='plus' />Nova Story
+                </Button>
+                <Modal open={this.state.open}>
                     <Modal.Header color='teal'>Cadastrar Nova Story</Modal.Header>
                     <Modal.Content>
                         <Form onSubmit={this.handleSubmit}>
@@ -167,7 +171,7 @@ render() {
                                 <label>Data Fim</label>
                                 <input type='text' name='dataFim' placeholder='Data Fim' onChange={this.handleChange} />
                             </Form.Field>
-                            <Button>Cancelar</Button><Button type='submit'>Cadastrar</Button>
+                            <Button onClick={this.hide}>Cancelar</Button><Button type='submit'>Cadastrar</Button>
                         </Form>
                     </Modal.Content>
                 </Modal>
@@ -189,19 +193,18 @@ render() {
                                             this.state.stories && Object.keys(this.state.stories)
                                                 .map(
                                                     key => {
-                                                        // isMember ? "$2.00" : "$10.00"
-
                                                         return (this.state.stories[key].situacao === 'A fazer' ?
                                                             <Storie
-                                                                id = {key}
                                                                 key = {key}
+                                                                id = {key}
                                                                 idProj = {this.props.match.params.id}
                                                                 descricao={this.state.stories[key].storiesDesc}
                                                                 titulo={this.state.stories[key].storiesTitulo}
                                                                 dataInicio={this.state.stories[key].dataInicio}
                                                                 dataFim={this.state.stories[key].dataFim}
                                                                 situacao={this.state.stories[key].situacao}
-                                                                pontos={this.state.stories[key].storiesPoint}
+                                                                pontos={this.state.stories[key].storyPoint}
+                                                                handleLoad={this.carregaStories}
                                                             /> : null)
 
                                                     })
@@ -234,7 +237,7 @@ render() {
                                                                 dataInicio={this.state.stories[key].dataInicio}
                                                                 dataFim={this.state.stories[key].dataFim}
                                                                 situacao={this.state.stories[key].situacao}
-                                                                pontos={this.state.stories[key].storiesPoint}
+                                                                pontos={this.state.stories[key].storyPoint}
                                                             /> : null)
 
                                                     })
@@ -267,7 +270,7 @@ render() {
                                                                 dataInicio={this.state.stories[key].dataInicio}
                                                                 dataFim={this.state.stories[key].dataFim}
                                                                 situacao={this.state.stories[key].situacao}
-                                                                pontos={this.state.stories[key].storiesPoint}
+                                                                pontos={this.state.stories[key].storyPoint}
                                                             /> : null)
 
                                                     })

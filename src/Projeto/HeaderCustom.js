@@ -18,7 +18,7 @@ class HeaderCustom extends Component {
     componentDidMount() {
 
         const usuarioAtual = auth.currentUser;
-        console.log(usuarioAtual);
+        //   console.log(usuarioAtual);
 
         if (usuarioAtual !== null) {
             const usuarioLogado = {
@@ -33,19 +33,19 @@ class HeaderCustom extends Component {
     }
 
     deslogarUsuario() {
-            auth
+        auth
             .signOut()
             .then(() => {
-                
+
                 this.setState({
                     usuario: '',
                     estaLogado: false,
                 })
 
-                console.log('Usuario deslogado com sucesso');
+                //      console.log('Usuario deslogado com sucesso');
             })
             .catch(error => {
-                console.log('Erro ao deslogar o usuário:' + error);
+                //      console.log('Erro ao deslogar o usuário:' + error);
             })
 
     }
@@ -96,9 +96,9 @@ class HeaderCustom extends Component {
                                                 <Dropdown.Item>
                                                     <Link to='/login'>Login</Link>
                                                 </Dropdown.Item>
-                                                <Dropdown.Item>
+                                                {/*} <Dropdown.Item>
                                                     <Link to='/registrar'>Registrar</Link>
-                                                </Dropdown.Item>
+                                                    </Dropdown.Item>*/}
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </Menu.Menu>

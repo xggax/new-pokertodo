@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
-import { Grid, Segment, Header, Icon, ListItem, List, Button, Modal, Input, Form, TextArea } from 'semantic-ui-react';
+import React, { Component, Fragment } from 'react';
+import { Grid, Segment, Header, Icon, ListItem, List, Button, Modal, Input, Form, TextArea, Message} from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import config, { auth, providers, db } from './../config';
-
 
 class Storie extends Component {
     constructor(props) {
@@ -16,157 +15,104 @@ class Storie extends Component {
             dataFimNovo: '',
             progressoNovo: '',
             pontosNovo: '',
+            
+            situacao: '',
+
             //modals
             modalOpenUpdate: false,
-            modalOpenExcluir: false,
-            modalOpenFechar: false
         }
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleUpdate = this.handleUpdate.bind(this);
     }
 
-    handleOpenUpdate = () => this.setState({ modalOpenUpdate: true })
+    componentDidMount = () => {
+        this.loadData()
+    }
 
-    handleCloseUpdtate = () => this.setState({ modalOpenUpdate: false })
+    loadData = () => {
+        this.setState({
+            tituloNovo: this.props.titulo,
+            descricaoNovo: this.props.descricao,
+            dataInicioNovo: this.props.dataInicio,
+            dataFimNovo: this.props.dataFim,
+            pontosNovo: this.props.pontos,
+            situacao: this.props.situacao,
+        })
+    }
 
-    handleOpenExcluir = () => { this.setState({ modalOpenExcluir: true }) }
+    edit = () => {
+        this.loadData()
+        this.show()
+    }
 
-    handleCloseExcluir = () => { this.setState({ modalOpenExcluir: false }) }
-
-    handleOpenFechar = () => this.setState({ modalOpenFechar: true })
-
-    handleCloseFechar = () => this.setState({ modalOpenFechar: false })
-
+    hide = () => {
+        this.setState({modalOpenUpdate: false})
+     }
+ 
+     show = () => {
+        this.setState({modalOpenUpdate: true})
+     }
+    
     handleChange = event => {
 
         const target = event.target;
         const value = target.value;
         const name = target.name;
 
-        this.setState({
+
+        this.setState({ 
             [name]: value,
-            //situacao: 'A fazer',
-            //storyPoint: '?',
         })
     }
 
 
-
-    handleUpdate(e) {
-        e.preventDefault();
+    handleUpdate = event => {
+        
+        event.preventDefault();
+        
         const itemId = this.props.id;
         const projId = this.props.idProj
-        console.log('enviou o form do item:', itemId);
-        
+
         const storyRef = db.ref(`/projetos/${projId}/stories/${itemId}`);
-        storyRef.on('value', (snapshot) => {
-            let story = snapshot.val();
-            console.log('story: ', story);
-            const {storiesTitulo, storiesDesc, situacao, dataInicio, dataFim, storyPoint } = story;
+        
+        const updateStory = {
+            storiesTitulo: this.state.tituloNovo,
+            storiesDesc: this.state.descricaoNovo,
+            dataInicio: this.state.dataInicioNovo,
+            dataFim: this.state.dataFimNovo,
+            situacao: this.state.situacao,
+            storyPoint: this.state.pontosNovo,
+        }
+        
+        storyRef.update(updateStory)
 
-            const updateStory = {
-                storiesTitulo: this.state.tituloNovo,
-                storiesDesc: this.state.descricaoNovo,
-                dataInicio: this.state.dataInicioNovo,
-                dataFim: this.state.dataFimNovo,
-                situacao: this.state.progressoNovo,
-                storyPoint: this.state.pontosNovo,
-            }
-
-            if(this.state.tituloNovo === ''){
-                updateStory.storiesTitulo = storiesTitulo;
-            }else{
-                updateStory.storiesTitulo = this.state.tituloNovo;
-            }
-
-            if(this.state.descricaoNovo === ''){
-                updateStory.storiesDesc = storiesDesc;
-            }else{
-                updateStory.storiesDesc = this.state.descricaoNovo;
-            }
-
-            if(this.state.dataInicioNovo === ''){
-                updateStory.dataInicio = dataInicio;
-            }else{
-                updateStory.dataInicio = this.state.dataInicioNovo;
-            }
-
-            if(this.state.dataFimNovo === ''){
-                updateStory.dataFim = dataFim;
-            }else{
-                updateStory.dataFim = this.state.dataFimNovo;
-            }
-
-            if(this.state.progressoNovo === ''){
-                updateStory.situacao = situacao;
-            }else{
-                updateStory.situacao = this.state.progressoNovo
-            }
-
-            if(this.state.pontosNovo === ''){
-                updateStory.storyPoint = storyPoint;
-            }else{
-                updateStory.storyPoint = this.state.pontosNovo;
-            }
-
-            console.log('updateStory:', updateStory);
-
-            storyRef.update({
-                storiesTitulo: updateStory.storiesTitulo,
-                storiesDesc: updateStory.storiesDesc,
-                dataInicio: updateStory.dataInicio,
-                dataFim: updateStory.dataFim,
-                situacao: updateStory.situacao,
-                storyPoint: updateStory.storyPoint,
-            })
-
-            this.setState({
-                tituloNovo: '',
-                descricaoNovo: '',
-                dataInicioNovo: '',
-                datafimNovo: '',
-                progressoNovo: '',
-                storyPointNovo: '',
-            });
-
-
+        this.setState({
+            tituloNovo: '',
+            descricaoNovo: '',
+            dataInicioNovo: '',
+            datafimNovo: '',
+            situacao: 'A fazer',
+            storyPointNovo: '',
         });
 
-        
+        this.hide()
 
-        /*
-        if(this.state.tituloNovo == ''){
-            this.setState({
-                tituloNovo: 
-            }) 
-        }
-
-
-        projetoRef.update({
-            storiesTitulo: this.state.tituloNovo,
-
-        })
-        */
     }
 
     //Primeiro preciso codar os projetos pra receber os parametros certos pra exluir usando a ID do projeto
     removeItem(itemId, projId) {
-        console.log('id da story: ', itemId);
-        console.log('id do projeto: ', itemId);
+      //  console.log('id da story: ', itemId);
+      //  console.log('id do projeto: ', itemId);
         const itemRef = db.ref(`/projetos/${projId}/stories/${itemId}`);
         itemRef.remove();
     }
 
     render() {
         return (
-            <span key={this.props.id} >
+            <Fragment >
                 {/* Os parâmetros passados pelas rotas chegam no componente através da propriedade params.
                 Poderíamos acessar o parâmetro id de dentro do componente respectivo à rota */
                 }
                 < Segment >
                     <List size={"tiny"}>
-                        <p>ID:{this.props.id}</p>
                         <Header as='h4'>Título: {this.props.titulo}
                             <Header.Subheader>
                                 <List.Item>
@@ -187,74 +133,57 @@ class Storie extends Component {
                             </Header.Subheader>
                         </Header>
                         <Link to=''><Button icon='clipboard outline' size='mini' /></Link>
-                        {/*Botão de Atualizar a Story*/}
+                        <Button onClick={this.edit} size='mini' icon='edit outline' />
                         <Modal
-                            trigger={<Button onClick={this.handleOpenUpdate} size='mini' icon='edit outline' />}
-                            basic size='small'
+                            size='small'
                             open={this.state.modalOpenUpdate}
-                            onClose={this.handleCloseUpdtate}
-                            dimmer= 'blurring'
+                            dimmer='blurring'                      
                         >
                             <Header icon='edit outline' content='Atualizar Story' />
-                            <p>*Deixe o campo em branco vazio se não quiser alterá-lo</p>
-                            <Modal.Content>
-                                <Form onSubmit={this.handleUpdate}>
-                                    <Form.Field>
+                            <Message color='yellow'>*Deixe o campo em branco vazio se não quiser alterá-lo</Message>
+                                <Modal.Content>
+                                    <Form onSubmit={this.handleUpdate}>
+                                        <Form.Field>
+                                            <label>Novo Título:</label>
+                                            <Input type='text' name='tituloNovo' value={this.state.tituloNovo} placeholder='Novo Título' onChange={this.handleChange} />
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <label>Nova Descrição:</label>
+                                            <TextArea type='text' name='descricaoNovo' value={this.state.descricaoNovo} rows='3' onChange={this.handleChange} />
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <label>Nova Data Inicio:</label>
+                                            <Input type='text' name='dataInicioNovo'  value={this.state.dataInicioNovo}  placeholder='Nova Data Início' onChange={this.handleChange} />
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <label>Nova Data Fim:</label>
+                                            <Input type='text' name='dataFimNovo'  value={this.state.dataFimNovo} placeholder='Nova Data Fim' onChange={this.handleChange} />
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <label>Novo Progresso</label>
+                                            <select value={this.state.situacao} name="situacao" onChange={this.handleChange}>
+                                                <option value="A fazer">A Fazer</option>
+                                                <option value="Fazendo">Fazendo</option>
+                                                <option value="Concluida">Concluída</option>
+                                            </select>
+                                            {/*<Input type='text' name='progressoNovo' placeholder='Novo Status de Progresso' onChange={this.handleChange} />*/}
+                                        </Form.Field>
+                                        <Form.Field>
+                                            <label>Nova Pontuação</label>
+                                            <Input type='text' name='pontosNovo' value={this.state.pontosNovo} placeholder='Nova Pontuação' onChange={this.handleChange} />
+                                        </Form.Field>
                                         
-                                        <p>Título Atual: {this.props.titulo}</p>
-                                        <label>Novo Título:</label>
-                                        <Input type='text' name='tituloNovo' placeholder='Novo Título' onChange={this.handleChange}  />
-                                        {this.state.tituloNovo}
-                                    </Form.Field>
-                                    <Form.Field>
-                                        
-                                        <p>Descrição Atual: {this.props.descricao}</p>
-                                        <label>Nova Descrição:</label>
-                                        <TextArea type='text' name='descricaoNovo' rows='3' onChange={this.handleChange} />
-                                        {this.state.descricaoNovo}
-                                    </Form.Field>
-                                    <Form.Field>
-                                        
-                                        <p>Data Início Atual: {this.props.dataInicio}</p>
-                                        <label>Nova Data Inicio:</label>
-                                        <Input type='text' name='dataInicioNovo' placeholder='Nova Data Início' onChange={this.handleChange} />
-                                        {this.state.dataInicioNovo}
-                                    </Form.Field>
-                                    <Form.Field>
-                                        
-                                        <p>Data Fim Atual: {this.props.dataFim}</p>
-                                        <label>Nova Data Fim:</label>
-                                        <Input type='text' name='dataFimNovo' placeholder='Nova Data Fim' onChange={this.handleChange} />
-                                        {this.state.dataFimNovo}
-                                    </Form.Field>
-                                    <Form.Field>
-                                        
-                                        <p>Progresso Atual: {this.props.progresso}</p>
-                                        <label>Novo Progresso</label>
-                                        <Input type='text' name='progressoNovo' placeholder='Novo Status de Progresso' onChange={this.handleChange} />
-                                        {this.state.progressoNovo}
-                                    </Form.Field>
-                                    <Form.Field>
-                                        
-                                        <p>Pontos Atual: {this.props.pontos}</p>
-                                        <label>Nova Pontuação</label>
-                                        <Input type='text' name='pontosNovo' placeholder='Nova Pontuação' onChange={this.handleChange} />
-                                        {this.state.progressoNovo}
-                                    </Form.Field>
-
+                                    <Button onClick={this.hide} color='red' inverted>
+                                        <Icon name='remove' /> Fechar
+                                        </Button>
                                     <Button type='submit'>Atualizar</Button>
-                                </Form>
-                            </Modal.Content>
-                            <Modal.Actions>
-                                <Button onClick={this.handleCloseUpdtate} color='red' inverted>
-                                    <Icon name='remove' /> Fechar
-                                    </Button>
-                            </Modal.Actions>
+                                    </Form>
+                                </Modal.Content>
                         </Modal>
                         <Button icon='delete' size='mini' onClick={() => this.removeItem(this.props.id, this.props.idProj)} />
                     </List>
                 </Segment>
-            </span >
+            </Fragment>
         )
     }
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Grid, Segment, Header, Icon, List, Modal, Button, Input } from 'semantic-ui-react';
-import config, { auth, providers, db } from './../config';
+import { db } from './../config';
 
 class Projeto extends Component {
     constructor(props) {
@@ -13,7 +13,6 @@ class Projeto extends Component {
             modalOpenExcluir: false,
             modalOpenFechar: false
         }
-        this.handleChange = this.handleChange.bind(this);
     }
 
     handleChange = event => {
@@ -36,7 +35,7 @@ class Projeto extends Component {
 
     renomearItem(itemId) { 
         const projetoRef = db.ref(`/projetos/${itemId}`);
-        console.log('descricaoProps: ', this.props.descricao)
+     //   console.log('descricaoProps: ', this.props.descricao)
 
         projetoRef.update({
             nome: this.state.nomeNovo,
@@ -74,11 +73,11 @@ class Projeto extends Component {
                         <List.Item>
                             <Modal
                                 trigger={<Button onClick={this.handleOpenFechar} size='mini'>Sobre</Button>}
-                                basic size='small'
+                                size='small'
                                 open={this.state.modalOpenFechar}
                                 onClose={this.handleCloseFechar}
                             >
-                                <Header icon='info circle' content='Sobre este projeto' />
+                                <Header icon='info circle' content={`Sobre o projeto ${this.props.titulo}`} />
                                 <Modal.Content>
                                     <Modal.Description>
                                         <h3>{this.props.descricao}</h3>
@@ -94,7 +93,7 @@ class Projeto extends Component {
                         <List.Item>
                             <Modal
                                 trigger={<Button onClick={this.handleOpenRenomear} size='mini'>Renomear</Button>}
-                                basic size='small'
+                                size='small'
                                 open={this.state.modalOpenRenomear}
                                 onClose={this.handleCloseRenomear}
                             >
@@ -118,7 +117,7 @@ class Projeto extends Component {
                         <List.Item>
                             <Modal
                                 trigger={<Button onClick={this.handleOpenExcluir} size='mini'>Excluir</Button>}
-                                basic size='small'
+                                size='small'
                                 open={this.state.modalOpenExcluir}
                                 onClose={this.handleCloseExcluir}
                             >
