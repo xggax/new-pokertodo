@@ -12,16 +12,16 @@ const Navegacao = props => {
                     <Menu.Item as={Link} to='/'>Home</Menu.Item>
                     <Menu.Menu position='right'>
                         <Menu.Item><Icon name='user' /></Menu.Item>
-                        <Dropdown item text='Acesse aqui'>
+                        {/*<Dropdown item text='Acesse aqui'>
                             <Dropdown.Menu>
                                 <Dropdown.Item>
                                     <Link to='/login'>Login</Link>
                                 </Dropdown.Item>
-                                {/*<Dropdown.Item>
+                                <Dropdown.Item>
                                     <Link to='/registrar'>Registrar</Link>
-                                </Dropdown.Item>*/}
+                                </Dropdown.Item>
                             </Dropdown.Menu>
-                        </Dropdown>
+                        </Dropdown>*/}
                     </Menu.Menu>
                 </Menu>
             </header>

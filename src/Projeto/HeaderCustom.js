@@ -1,7 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
+
 import { auth } from './../config';
+
 
 class HeaderCustom extends Component {
 
@@ -32,7 +34,7 @@ class HeaderCustom extends Component {
         }
     }
 
-    deslogarUsuario() {
+    deslogarUsuario = () => {
         auth
             .signOut()
             .then(() => {
@@ -53,6 +55,7 @@ class HeaderCustom extends Component {
     render() {
 
         const { foto, nome } = this.state.usuario;
+        
 
         return (
 

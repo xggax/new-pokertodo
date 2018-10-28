@@ -16,9 +16,9 @@ class App extends Component {
       <BrowserRouter>
         <div className="App">
           <Route path='/' exact component={Inicio} />
-          <Route path='/login' component={Login} />
+          {/*<Route path='/login' component={Login} />
           <Route path='/registrar' component={Registrar} />
-          <Route path='/recuperar' component={Recuperar} />
+          <Route path='/recuperar' component={Recuperar} />*/}
           <Route path='/projetos' component={ProjetosLista} />
           <Route path='/burndown' component={Burndown} />
           {/*Os parâmetros passados pelas rotas chegam no componente através da propriedade params*/}
