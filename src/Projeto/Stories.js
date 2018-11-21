@@ -1,8 +1,11 @@
-import React, { Component } from 'react';
-import { db } from './../config';
+import React, { Component, Fragment } from 'react';
+import { db, auth } from './../config';
+import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress } from 'semantic-ui-react'
+import DatePicker from "react-datepicker";
+import isAfter from 'date-fns/isAfter';
+import "react-datepicker/dist/react-datepicker.css";
 
 import HeaderCustom from './HeaderCustom';
-import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress } from 'semantic-ui-react'
 import Participantes from './Participantes';
 import Story from './Story';
 
@@ -12,29 +15,34 @@ class Stories extends Component {
         super(props)
 
         this.state = {
-            open: false,
-            descProj: '',
-            stories: {},
-            storyAtual: 0,
-            quantStories: 3,
+            openAndClose: false,
             estaCarregando: false,
+            stories: {},
+            equipeProj: {},
+            scrumMasterProj: '',
+            descProj: '',
+            concluidas: '',
+            quantStories: '',
             titulo: '',
             descricao: '',
-            dataInicio: '',
-            dataFim: '',
+            dataInicio: new Date(),
+            dataFim: new Date(),
             situacao: '',
-            storyPoint: ''
+            storyPoint: '',
+            atualizadoPor: '',
+
         }
 
     }
 
     componentDidMount = () => {
-        this.carregaStories(this.props.match.params.nome);
 
+        //this.carregaStories(this.props.match.params.nome);
+        this.carregaStories(this.props.match.params.id);
     }
 
     // receber os eventos de mudança de estado pra cada field do formulário e armazenar nos meus estados
-    handleChange = event => {
+    handleChangeNormal = event => {
 
         const target = event.target;
         const value = target.value;
@@ -44,17 +52,36 @@ class Stories extends Component {
             [name]: value,
             situacao: 'A fazer',
             storyPoint: '?',
+            atualizadoPor: auth.currentUser.displayName
         })
     }
 
-    //Enviar o formulário e guardar a nova storie no Banco de dados
+    handleChange = ({ startDate, endDate }) => {
+        startDate = startDate || this.state.dataInicio;
+        endDate = endDate || this.state.dataFim;
+
+        if (isAfter(startDate, endDate)) {
+            endDate = startDate;
+        }
+
+        this.setState({ dataInicio: startDate, dataFim: endDate });
+    };
+
+    handleChangeDataInicio = (startDate) => {
+        this.handleChange({ startDate });
+    }
+
+    handleChangeDataFim = (endDate) => {
+        this.handleChange({ endDate })
+    };
+
+    //Enviar o formulário e guardar a nova story no Banco de dados
     handleSubmit = e => {
         e.preventDefault();
-        const idSubmit = this.props.match.params.id;
-        const proj = this.props.match.params.nome;
-
-        //const projetosRef = db.ref(`projetos/${idSubmit}/stories/${id}`);
-        const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
+        const idProj = this.props.match.params.id;
+        // Pegar uma chave para a nova Story.
+        const novaChaveStory = db.ref(`projetos/${idProj}`).child('stories').push().key;
+        // Objeto da nova Story
         const story = {
             storiesTitulo: this.state.titulo,
             storiesDesc: this.state.descricao,
@@ -62,233 +89,286 @@ class Stories extends Component {
             dataFim: this.state.dataFim,
             situacao: this.state.situacao,
             storyPoint: this.state.storyPoint,
+            atualizadoPor: this.state.atualizadoPor,
         }
-      //  console.log('===============', 'criou', story)
-        storiesRef.push(story);
-        
-        this.setState({
-            titulo: '',
-            descricao: '',
-            dataInicio: '',
-            dataFim: '',
-            situacao: '',
-            storyPoint: '',
-        });
 
-        this.carregaStories(proj);
-        this.hide();
+        const usuario = db.ref().child('usuarios').orderByChild('uid').equalTo(`${auth.currentUser.uid}`);
+
+        usuario.once('value', (snapshot) => {
+            let usuarioObjeto = snapshot.val();
+            let chaveUsuario = Object.keys(usuarioObjeto)[0];
+            let updates = {};
+            updates['/projetos/' + idProj + '/stories/' + novaChaveStory] = story;
+            updates['/projetosDoUsuario/' + chaveUsuario + '/' + idProj + '/stories/' + novaChaveStory] = story;
+
+            db.ref().update(updates);
+
+        })
+
+        this.showAndHide();
+
+
     }
 
-    carregaStories = (proj) => {
-      //  console.log('================projeto: ', proj);
+    carregaStories = (idProj) => {
+
         this.setState({
+            stories: {},
             estaCarregando: true,
         })
-        //const storiesRef = db.ref(`projetos/${proj}/stories/`);
-        const storiesRef = db.ref('projetos');
+
+        const projetoRef = db.ref(`projetos/${idProj}`);
+        //Observador ligado pra atualizar nos outros
+        projetoRef.on('value', (snapshot) => {
+            let projeto = snapshot.val();
+            if (projeto) {
+                this.setState({
+                    stories: projeto.stories,
+                    descProj: projeto.descricao,
+                    equipeProj: projeto.equipeProj,
+                    scrumMasterProj: projeto.scrumMasterProj,
+                    estaCarregando: false,
+                });
+            }
+        });
+
+        this.totalConcluidas();
+    }
+
+    showAndHide = () => {
+        this.setState(prevState => ({
+            openAndClose: !prevState.openAndClose
+        }));
+    }
+
+    totalConcluidas = () => {
+        const idSubmit = this.props.match.params.id;
+        const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
+
         storiesRef.on('value', (snapshot) => {
+            let concluidas = 0;
+            let quantStories = 0;
             let stories = snapshot.val();
-        //    console.log('projetos: ', stories);
-            let newState = {};
-            let descProj = '';
 
             for (let key in stories) {
-           //     console.log(stories[key]);
-                if(stories[key].nome === proj){
-            //        console.log('É esse aqui:', stories[key]);
-                    newState = stories[key].stories;
-                    descProj =  stories[key].descricao;
+
+                quantStories += 1
+
+                if (stories[key].situacao === 'Concluida') {
+                    concluidas += 1;
                 }
+
             }
 
-            console.log('newState: ', newState );
-            
             this.setState({
-                stories: newState,
-                estaCarregando: false,
-                descProj: descProj
+                concluidas: concluidas,
+                quantStories: quantStories
             });
         });
+
+
     }
 
-    
-    hide = () => {
-        this.setState({open: false})
-     }
- 
-     show = () => {
-        this.setState({open: true})
-     }
 
+    render() {
+        if (this.state.estaCarregando) {
+            return <p><Icon loading name='spinner' /> Carregando...</p>
+        }
 
+        return (
 
-
-render() {
-    /*let item = [];*/
-    if (this.state.estaCarregando) {
-        return <p><Icon loading name='spinner' /> Carregando...</p>
-    }
-
-    return (
-
-        <div>
-            <HeaderCustom />
-            {/*<h2>{JSON.stringify(this.state.stories)}</h2>*/}
-            <Container>
-                <Segment piled>
-                    <Header as='h2'>Kanban</Header>
-                </Segment>
-                <Header as='h2' >
-                    Projeto: {this.props.match.params.nome}
-                    <Header.Subheader>Descrição: {this.state.descProj}</Header.Subheader>
+            <Fragment>
+                <HeaderCustom />
+                {/*<h2>{JSON.stringify(this.state.stories)}</h2>*/}
+                <Container>
+                    <Segment piled>
+                        <Header as='h2'>Quadro Kanban</Header>
+                    </Segment>
+                    <Header as='h2' >
+                        Projeto: {this.props.match.params.nome}
+                        <Header.Subheader>Descrição: {this.state.descProj}</Header.Subheader>
+                        <Divider />
+                        <Participantes
+                            equipeProj={this.state.equipeProj}
+                            scrumMasterProj={this.state.scrumMasterProj}
+                            idProj={this.props.match.params.id}
+                            carregaStories={this.carregaStories}
+                        //carregaStories= {this.carregaStories}
+                        />
+                        <Divider />
+                    </Header>
                     <Divider />
-                    <Participantes />
+                    <Header as='h3'>Concluídas</Header>
+                    <Progress color='teal' value={this.state.concluidas} total={this.state.quantStories} progress='ratio' />
                     <Divider />
-                </Header>
-                {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
-                <Button onClick={this.show} floated='left' color='teal'>
-                    <Icon name='plus' />Nova Story
+                    {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
+                    <Button onClick={this.showAndHide} floated='left' color='teal'>
+                        <Icon name='plus' />Nova Story
                 </Button>
-                <Modal open={this.state.open}>
-                    <Modal.Header color='teal'>Cadastrar Nova Story</Modal.Header>
-                    <Modal.Content>
-                        <Form onSubmit={this.handleSubmit}>
-                            <Form.Field>
-                                <label>Título</label>
-                                <input type='text' name='titulo' placeholder='Título' onChange={this.handleChange} />
-                            </Form.Field>
-                            <Form.Field>
-                                <label>Descrição</label>
-                                <textarea type='text' name='descricao' rows='3' onChange={this.handleChange} />
-                            </Form.Field>
-                            <Form.Field>
-                                <label>Data Início</label>
-                                <input type='text' name='dataInicio' placeholder='Data Início' onChange={this.handleChange} />
-                            </Form.Field>
-                            <Form.Field>
-                                <label>Data Fim</label>
-                                <input type='text' name='dataFim' placeholder='Data Fim' onChange={this.handleChange} />
-                            </Form.Field>
-                            <Button onClick={this.hide}>Cancelar</Button><Button type='submit'>Cadastrar</Button>
-                        </Form>
-                    </Modal.Content>
-                </Modal>
+                    <Modal open={this.state.openAndClose}>
+                        <Modal.Header color='teal'>Cadastrar Nova Story</Modal.Header>
+                        <Modal.Content>
+                            <Form onSubmit={this.handleSubmit}>
+                                <Form.Field>
+                                    <label>Título</label>
+                                    <input required value={this.state.titulo} type='text' name='titulo' placeholder='Título' onChange={this.handleChangeNormal} />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Descrição</label>
+                                    <textarea required value={this.state.descricao} type='text' name='descricao' rows='3' onChange={this.handleChangeNormal} />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Data de Início Prevista:</label>
+                                    <DatePicker
+                                        selected={this.state.dataInicio}
+                                        selectsStart
+                                        startDate={this.state.dataInicio}
+                                        endDate={this.state.dataFim}
+                                        onChange={this.handleChangeDataInicio}
+                                        dateFormat="dd/MM/yyyy"
+                                        placeholderText="DD/MM/AAAA"
+                                    />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Data Fim Prevista:</label>
+                                    <DatePicker
+                                        selected={this.state.dataFim}
+                                        selectsEnd
+                                        startDate={this.state.dataInicio}
+                                        endDate={this.state.dataFim}
+                                        onChange={this.handleChangeDataFim}
+                                        dateFormat="dd/MM/yyyy"
+                                        placeholderText="DD/MM/AAAA"
+                                    />
+                                </Form.Field>
+                                {/*<Form.Field>
+                                    <label>Data Início</label>
+                                    <input required type='date' name='dataInicio' placeholder='Data Início' onChange={this.handleChange} />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Data Fim</label>
+                                    <input required type='date' name='dataFim' placeholder='Data Fim' onChange={this.handleChange} />
+                                </Form.Field>*/}
+                                <Button onClick={this.showAndHide}>Cancelar</Button><Button type='submit'>Cadastrar</Button>
+                            </Form>
+                        </Modal.Content>
+                    </Modal>
 
-                <br /><br /><br />
+                    <br /><br /><br />
 
-                <Grid stackable>
-                    <Grid.Row>
-                        <Grid.Column width={5} >
-                            <List>
-                                {
+                    <Grid stackable>
+                        <Grid.Row>
+                            <Grid.Column width={5} >
+                                <List>
+                                    {
 
-                                    <List.Item>
+                                        <List.Item>
 
-                                        <Header as='h2' dividing>A Fazer</Header>
-                                        <br />
+                                            <Header as='h2' dividing>A Fazer</Header>
+                                            <br />
 
-                                        {
-                                            this.state.stories && Object.keys(this.state.stories)
-                                                .map(
-                                                    key => {
-                                                        return (this.state.stories[key].situacao === 'A fazer' ?
-                                                            <Story
-                                                                key = {key}
-                                                                id = {key}
-                                                                idProj = {this.props.match.params.id}
-                                                                descricao={this.state.stories[key].storiesDesc}
-                                                                titulo={this.state.stories[key].storiesTitulo}
-                                                                dataInicio={this.state.stories[key].dataInicio}
-                                                                dataFim={this.state.stories[key].dataFim}
-                                                                situacao={this.state.stories[key].situacao}
-                                                                pontos={this.state.stories[key].storyPoint}
-                                                                handleLoad={this.carregaStories}
-                                                            /> : null)
+                                            {
+                                                this.state.stories && Object.keys(this.state.stories)
+                                                    .map(
+                                                        key => {
+                                                            return (this.state.stories[key].situacao === 'A fazer' ?
+                                                                <Story
+                                                                    key={key}
+                                                                    id={key}
+                                                                    idProj={this.props.match.params.id}
+                                                                    descricao={this.state.stories[key].storiesDesc}
+                                                                    titulo={this.state.stories[key].storiesTitulo}
+                                                                    dataInicio={this.state.stories[key].dataInicio}
+                                                                    dataFim={this.state.stories[key].dataFim}
+                                                                    situacao={this.state.stories[key].situacao}
+                                                                    pontos={this.state.stories[key].storyPoint}
+                                                                    atualizadoPor={this.state.stories[key].atualizadoPor}
+                                                                    handleLoad={this.carregaStories}
+                                                                /> : null)
 
-                                                    })
-                                        }
+                                                        })
+                                            }
 
-                                    </List.Item>
-                                }
-                            </List>
-                        </Grid.Column>
-                        <Grid.Column width={5}>
-                            <List>
-                                {
+                                        </List.Item>
+                                    }
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column width={5}>
+                                <List>
+                                    {
 
-                                    <List.Item>
+                                        <List.Item>
 
-                                        <Header as='h2' dividing>Fazendo</Header>
-                                        <br />
-                                        {
-                                            this.state.stories && Object.keys(this.state.stories)
-                                                .map(
-                                                    key => {
-                                                        // isMember ? "$2.00" : "$10.00"
-                                                        return (this.state.stories[key].situacao === 'Fazendo' ?
-                                                            <Story 
-                                                                id = {key}
-                                                                key = {key}
-                                                                idProj = {this.props.match.params.id}
-                                                                descricao={this.state.stories[key].storiesDesc}
-                                                                titulo={this.state.stories[key].storiesTitulo}
-                                                                dataInicio={this.state.stories[key].dataInicio}
-                                                                dataFim={this.state.stories[key].dataFim}
-                                                                situacao={this.state.stories[key].situacao}
-                                                                pontos={this.state.stories[key].storyPoint}
-                                                                handleLoad={this.carregaStories}
-                                                            /> : null)
+                                            <Header as='h2' dividing>Fazendo</Header>
+                                            <br />
+                                            {
+                                                this.state.stories && Object.keys(this.state.stories)
+                                                    .map(
+                                                        key => {
+                                                            // isMember ? "$2.00" : "$10.00"
+                                                            return (this.state.stories[key].situacao === 'Fazendo' ?
+                                                                <Story
+                                                                    id={key}
+                                                                    key={key}
+                                                                    idProj={this.props.match.params.id}
+                                                                    descricao={this.state.stories[key].storiesDesc}
+                                                                    titulo={this.state.stories[key].storiesTitulo}
+                                                                    dataInicio={this.state.stories[key].dataInicio}
+                                                                    dataFim={this.state.stories[key].dataFim}
+                                                                    situacao={this.state.stories[key].situacao}
+                                                                    pontos={this.state.stories[key].storyPoint}
+                                                                    atualizadoPor={this.state.stories[key].atualizadoPor}
+                                                                    handleLoad={this.carregaStories}
+                                                                /> : null)
 
-                                                    })
-                                        }
+                                                        })
+                                            }
 
-                                    </List.Item>
-                                }
-                            </List>
-                        </Grid.Column>
-                        <Grid.Column width={5}>
-                            <List>
-                                {
+                                        </List.Item>
+                                    }
+                                </List>
+                            </Grid.Column>
+                            <Grid.Column width={5}>
+                                <List>
+                                    {
 
-                                    <List.Item>
+                                        <List.Item>
 
-                                        <Header as='h2' dividing>Concluída</Header>
-                                        <br />
-                                        {
-                                            this.state.stories && Object.keys(this.state.stories)
-                                                .map(
-                                                    key => {
-                                                        // isMember ? "$2.00" : "$10.00"
-                                                        return (this.state.stories[key].situacao === 'Concluida' ?
-                                                            <Story 
-                                                                key={key}
-                                                                id={key}
-                                                                idProj = {this.props.match.params.id}
-                                                                descricao={this.state.stories[key].storiesDesc}
-                                                                titulo={this.state.stories[key].storiesTitulo}
-                                                                dataInicio={this.state.stories[key].dataInicio}
-                                                                dataFim={this.state.stories[key].dataFim}
-                                                                situacao={this.state.stories[key].situacao}
-                                                                pontos={this.state.stories[key].storyPoint}
-                                                                handleLoad={this.carregaStories}
-                                                            /> : null)
+                                            <Header as='h2' dividing>Concluída</Header>
+                                            <br />
+                                            {
+                                                this.state.stories && Object.keys(this.state.stories)
+                                                    .map(
+                                                        key => {
+                                                            // isMember ? "$2.00" : "$10.00"
+                                                            return (this.state.stories[key].situacao === 'Concluida' ?
+                                                                <Story
+                                                                    key={key}
+                                                                    id={key}
+                                                                    idProj={this.props.match.params.id}
+                                                                    descricao={this.state.stories[key].storiesDesc}
+                                                                    titulo={this.state.stories[key].storiesTitulo}
+                                                                    dataInicio={this.state.stories[key].dataInicio}
+                                                                    dataFim={this.state.stories[key].dataFim}
+                                                                    situacao={this.state.stories[key].situacao}
+                                                                    pontos={this.state.stories[key].storyPoint}
+                                                                    atualizadoPor={this.state.stories[key].atualizadoPor}
+                                                                    handleLoad={this.carregaStories}
+                                                                /> : null)
 
-                                                    })
-                                        }
+                                                        })
+                                            }
 
-                                    </List.Item>
-                                }
-                            </List>
-                        </Grid.Column>
-                    </Grid.Row>
-                </Grid>
-                <Divider />
-                <Header as='h3'>Concluídas</Header>
-                <Progress value={this.state.storyAtual} total={this.state.quantStories} progress='ratio' />
-            </Container>
-        </div>
-    )
-}
+                                        </List.Item>
+                                    }
+                                </List>
+                            </Grid.Column>
+                        </Grid.Row>
+                    </Grid>
+                </Container>
+            </Fragment>
+        )
+    }
 }
 
 export default Stories;

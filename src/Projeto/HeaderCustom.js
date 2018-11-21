@@ -1,6 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Menu, Dropdown, Image, Icon } from 'semantic-ui-react';
-import { Link, Redirect } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { auth } from './../config';
 
@@ -15,13 +15,19 @@ class HeaderCustom extends Component {
             estaLogado: false,
         }
 
+        
     }
 
     componentDidMount() {
+        // # Melhoria Futura:
+        // # Não consegui usar o asyc e await então usei setInterval até chegar os dados do CurrentUser 
+        // lá do firebase e poder renderizar todo o resto corretamente. Problema: um mini delay no carregamento
+        this.getCurrentUser();
 
+        /* 
         const usuarioAtual = auth.currentUser;
-        //   console.log(usuarioAtual);
-
+        console.log(usuarioAtual);
+          
         if (usuarioAtual !== null) {
             const usuarioLogado = {
                 nome: usuarioAtual.displayName,
@@ -32,12 +38,33 @@ class HeaderCustom extends Component {
                 estaLogado: true
             });
         }
+        console.log('emailUser: ', this.state.usuario.email)
+        */
     }
 
+    getCurrentUser = () => {
+        let usuarioAtual = setInterval(() => {
+            if ( auth.currentUser !== null ) {
+                clearInterval(usuarioAtual);
+                const usuarioLogado = {
+                    nome: auth.currentUser.displayName,
+                    email: auth.currentUser.email,
+                    foto: auth.currentUser.photoURL,
+                }
+                this.setState({
+                    usuario: usuarioLogado,
+                    estaLogado: true
+                });
+                //console.log(auth.currentUser)
+                return auth.currentUser;
+            } else {
+              console.log('Recebendo os dados ainda...');
+            }
+          }, 350);
+    }
+    
     deslogarUsuario = () => {
-        auth
-            .signOut()
-            .then(() => {
+        auth.signOut().then(() => {
 
                 this.setState({
                     usuario: '',
@@ -54,18 +81,16 @@ class HeaderCustom extends Component {
 
     render() {
 
-        const { foto, nome } = this.state.usuario;
+        const { foto, nome, email} = this.state.usuario;
         
-
         return (
-
 
             <div className="App">
                 <header className="App-header">
                     <h1 className="App-title">Poker To Do</h1>
-
-                    {
-                        this.state.estaLogado ?
+                    {   
+                            
+                        this.state.estaLogado &&
                             (
                                 <Menu>
                                     <Menu.Item><strong>PokerToDo</strong></Menu.Item>
@@ -73,7 +98,7 @@ class HeaderCustom extends Component {
                                     <Menu.Item as={Link} to='/projetos'>Projetos</Menu.Item>
                                     <Menu.Menu position='right'>
                                         <Menu.Item><Image avatar src={foto} /></Menu.Item>
-                                        <Dropdown item text={nome}>
+                                        <Dropdown item text={nome!== null ? nome : email}>
                                             <Dropdown.Menu>
                                                 <Dropdown.Item>
                                                     Perfil
@@ -87,7 +112,9 @@ class HeaderCustom extends Component {
                                 </Menu>
 
                             )
-                            :
+                        }
+                        {
+                            !this.state.estaLogado &&
                             (
                                 <Menu>
                                     <Menu.Item><strong>PokerToDo</strong></Menu.Item>
@@ -97,7 +124,7 @@ class HeaderCustom extends Component {
                                         <Dropdown item text='Acesse aqui'>
                                             <Dropdown.Menu>
                                                 <Dropdown.Item>
-                                                    <Link to='/login'>Login</Link>
+                                                    <Link to='/'>Login</Link>
                                                 </Dropdown.Item>
                                                 {/*} <Dropdown.Item>
                                                     <Link to='/registrar'>Registrar</Link>

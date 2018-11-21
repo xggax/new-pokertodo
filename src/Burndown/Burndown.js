@@ -1,20 +1,245 @@
-import React from 'react';
-import {Container, Segment} from 'semantic-ui-react'
+import React, { Component, Fragment } from 'react';
+import { db,} from './../config';
+import Highcharts from 'highcharts/highstock'
+import HighchartsReact from 'highcharts-react-official'
 
-import HeaderCustom from './../Projeto/HeaderCustom';
+import HeaderCustom from '../Projeto/HeaderCustom';
+import { Container, Segment, Icon,} from 'semantic-ui-react'
 
-const Burndown = (props) => {
-    return (
-        <div>
-            <HeaderCustom />
-            <Container>
-                <Segment piled>
-                    <h2>Burndown Chart</h2>
-                </Segment>
-            </Container>
+/*
+const options = {
+    title: {
+        text: 'Burndown Chart',
+        x: -20 //center
+      },
+      colors: ['blue', 'red'],
+      plotOptions: {
+        line: {
+          lineWidth: 3
+        },
+        tooltip: {
+          hideDelay: 200
+        }
+      },
+      subtitle: {
+        text: 'Sprint 1',
+        x: -20
+      },
+      xAxis: {
+        categories: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6',
+                     'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Day 11', 'Day 12']
+      },
+      yAxis: {
+        title: {
+          text: 'Hours'
+        },
+        plotLines: [{
+          value: 0,
+          width: 1
+        }]
+      },
+      tooltip: {
+        valueSuffix: ' hrs',
+        crosshairs: true,
+        shared: true
+      },
+      legend: {
+        layout: 'vertical',
+        align: 'right',
+        verticalAlign: 'middle',
+        borderWidth: 0
+      },
+      series: [{
+        name: 'Ideal Burn',
+        color: 'rgba(255,0,0,0.25)',
+        lineWidth: 2,
+        data: [110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0]
+      }, {
+        name: 'Actual Burn',
+        color: 'rgba(0,120,200,0.75)',
+        marker: {
+          radius: 6
+        },
+        data: [100, 110, 125, 95, 64, 76, 62, 44, 35, 29, 18, 2]
+      }]
+  }
+*/
+/*
+const data = [
+    { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
+    { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
+    { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
+    { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
+    { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
+    { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
+    { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
+];
+*/
+class Burndown extends Component {
 
-        </div>
-    )
+    constructor(props) {
+        super(props)
+
+        this.state = {
+            openAndClose: false,
+            estaCarregando: false,
+            stories: {},
+            equipeProj: {},
+            scrumMasterProj: '',
+            descProj: '',
+            concluidas: '',
+            quantStories: '',
+            options: {},
+
+        }
+
+    }
+
+    componentDidMount = () => {
+        this.carregaStories(this.props.match.params.id);
+    }
+
+    carregaStories = (idProj) => {
+
+        this.setState({
+            stories: {},
+            estaCarregando: true,
+        })
+
+        const projetoRef = db.ref(`projetos/${idProj}`);
+        //Observador ligado pra atualizar nos outros
+        projetoRef.on('value', (snapshot) => {
+            let projeto = snapshot.val();
+            if (projeto) {
+                this.setState({
+                    stories: projeto.stories,
+                    descProj: projeto.descricao,
+                    equipeProj: projeto.equipeProj,
+                    scrumMasterProj: projeto.scrumMasterProj,
+                    estaCarregando: false,
+                });
+            }
+        });
+
+        this.totalConcluidas();
+
+        this.setState({
+            options: {
+                title: {
+                  text: `Burndown Chart do projeto: ${this.props.match.params.nome}`,
+                  x: -20 //center
+                },
+                colors: ['blue', 'red'],
+                plotOptions: {
+                  line: {
+                    lineWidth: 3
+                  },
+                  tooltip: {
+                    hideDelay: 200
+                  }
+                },
+                subtitle: {
+                  text: `Nome do projeto: ${this.props.match.params.nome}`,
+                  x: -20
+                },
+                xAxis: {
+                  categories: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6',
+                               'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Day 11', 'Day 12']
+                },
+                yAxis: {
+                  title: {
+                    text: 'Hours'
+                  },
+                  plotLines: [{
+                    value: 0,
+                    width: 1
+                  }]
+                },
+                tooltip: {
+                  valueSuffix: ' hrs',
+                  crosshairs: true,
+                  shared: true
+                },
+                legend: {
+                  layout: 'vertical',
+                  align: 'right',
+                  verticalAlign: 'middle',
+                  borderWidth: 0
+                },
+                series: [{
+                  name: 'Ideal Burn',
+                  color: 'rgba(255,0,0,0.25)',
+                  lineWidth: 2,
+                  data: [110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0]
+                }, {
+                  name: 'Actual Burn',
+                  color: 'rgba(0,120,200,0.75)',
+                  marker: {
+                    radius: 6
+                  },
+                  data: [100, 110, 125, 95, 64, 76, 62, 44, 35, 29, 18, 2]
+                }]
+              }
+        })
+
+    }
+
+    showAndHide = () => {
+        this.setState(prevState => ({
+            openAndClose: !prevState.openAndClose
+        }));
+    }
+
+    totalConcluidas = () => {
+        const idSubmit = this.props.match.params.id;
+        const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
+
+        storiesRef.on('value', (snapshot) => {
+            let concluidas = 0;
+            let quantStories = 0;
+            let stories = snapshot.val();
+
+            for (let key in stories) {
+
+                quantStories += 1
+
+                if (stories[key].situacao === 'Concluida') {
+                    concluidas += 1;
+                }
+
+            }
+
+            this.setState({
+                concluidas: concluidas,
+                quantStories: quantStories
+            });
+        });
+
+
+    }
+
+
+    render() {
+        if (this.state.estaCarregando) {
+            return <p><Icon loading name='spinner' /> Carregando...</p>
+        }
+
+        return (
+
+            <Fragment>
+                <HeaderCustom />
+                <Container>
+                    <Segment piled>
+                        <h2>Burndown Chart</h2>
+                    </Segment>
+                    <HighchartsReact
+                            highcharts={Highcharts}
+                            options={this.state.options}  
+                        />
+                </Container>
+            </Fragment>
+        )
+    }
 }
 
 export default Burndown;

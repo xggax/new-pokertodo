@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Dropdown, Icon} from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 
 const Navegacao = props => {
@@ -10,19 +10,16 @@ const Navegacao = props => {
                 <Menu>
                     <Menu.Item><strong>PokerToDo</strong></Menu.Item>
                     <Menu.Item as={Link} to='/'>Home</Menu.Item>
-                    <Menu.Menu position='right'>
+                    {/*<Menu.Menu position='right'>
                         <Menu.Item><Icon name='user' /></Menu.Item>
-                        {/*<Dropdown item text='Acesse aqui'>
+                        <Dropdown item text='Acesse aqui'>
                             <Dropdown.Menu>
                                 <Dropdown.Item>
-                                    <Link to='/login'>Login</Link>
-                                </Dropdown.Item>
-                                <Dropdown.Item>
-                                    <Link to='/registrar'>Registrar</Link>
+                                    Google
                                 </Dropdown.Item>
                             </Dropdown.Menu>
-                        </Dropdown>*/}
-                    </Menu.Menu>
+                        </Dropdown>
+                    </Menu.Menu>*/}
                 </Menu>
             </header>
         </div>
