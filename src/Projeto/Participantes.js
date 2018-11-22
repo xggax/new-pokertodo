@@ -119,7 +119,9 @@ class Participantes extends Component {
                     <Icon name='user plus' floated='left' />
                 </Button>
                 <ListItem>
-                    <Modal open={this.state.openAndClose}>
+                    <Modal 
+                    dimmer='blurring'
+                    open={this.state.openAndClose}>
                         <Modal.Header color='teal'><Icon name='user plus' floated='left' /> Adicionar Membro</Modal.Header>
                         <Modal.Content>
                             <Header as='h3'>Atenção: O membro a ser adicionado ao projeto precisa, alguma vez, já ter autenticado-se nesse sistema!

@@ -100,9 +100,9 @@ class HeaderCustom extends Component {
                                         <Menu.Item><Image avatar src={foto} /></Menu.Item>
                                         <Dropdown item text={nome!== null ? nome : email}>
                                             <Dropdown.Menu>
-                                                <Dropdown.Item>
+                                                {/*<Dropdown.Item>
                                                     Perfil
-                                                </Dropdown.Item>
+                                                </Dropdown.Item>*/}
                                                 <Dropdown.Item onClick={this.deslogarUsuario}>
                                                     Sair
                                                 </Dropdown.Item>

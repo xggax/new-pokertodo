@@ -137,7 +137,6 @@ class ProjetosLista extends Component {
 
                 updates['projetos/' + chaveProj + '/dataInicioPrevista/'] = this.state.dataInicioNovo;
                 updates['projetos/' + chaveProj + '/dataFimPrevista/'] = this.state.dataFimNovo;
-
                 updates['projetos/' + chaveProj + '/equipeProj/' + chaveMe] = me[chaveMe];
                 updates['usuariosNoProjeto/' + chaveProj + '/' + chaveMe] = me[chaveMe];
                 projeto.equipeProj = me;
@@ -238,7 +237,7 @@ class ProjetosLista extends Component {
                                     {/*JSON.stringify(this.props)*/}
                                     <Header as='h2'>Lista de Projetos</Header>
                                 </Segment>
-                                <Header as='h3'>Selecione o projeto</Header>
+                                <Header as='h3'>Acesse seus projetos</Header>
                                 <Button onClick={this.show} floated='left' color='teal'>
                                     <Icon name='plus' /> Novo Projeto
                             </Button>
@@ -299,6 +298,7 @@ class ProjetosLista extends Component {
                                                     equipe={(this.state.projetos[key].equipeProj)}
                                                     carregaProjetos={this.carregaProjetos}
                                                     chaveUsuario={this.state.chaveUsuario}
+                                                    atualizadoPor={this.state.projetos[key].atualizadoPor}
                                                 />
                                             }
 

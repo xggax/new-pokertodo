@@ -188,32 +188,24 @@ class Story extends Component {
                                 <br />
                             </Header.Subheader>
                         </Header>
-                        <Link to='/configurarPlanningPoker'><Button icon='clipboard outline' size='mini' /></Link>
+                        {/*<Link to='/configurarPlanningPoker'><Button icon='clipboard outline' size='mini' /></Link>*/}
                         <Button onClick={this.edit} size='mini' icon='edit outline' />
                         <Modal
                             size='small'
                             open={this.state.modalOpenUpdate}
                             dimmer='blurring'
                         >
-                            <Header icon='edit outline' content='Atualizar Story' />
+                            <Header icon='edit outline' content='Atualizar Estória' />
                             <Modal.Content>
                                 <Form onSubmit={this.handleUpdate}>
                                     <Form.Field>
                                         <label>Novo Título:</label>
-                                        <Input required type='text' name='tituloNovo' value={this.state.tituloNovo} placeholder='Novo Título' onChange={this.handleChange} />
+                                        <Input required type='text' name='tituloNovo' value={this.state.tituloNovo} placeholder='Novo Título' onChange={this.handleChangeNormal} />
                                     </Form.Field>
                                     <Form.Field>
                                         <label>Nova Descrição:</label>
-                                        <TextArea required type='text' name='descricaoNovo' value={this.state.descricaoNovo} rows='3' onChange={this.handleChange} />
+                                        <TextArea required type='text' name='descricaoNovo' value={this.state.descricaoNovo} rows='3' onChange={this.handleChangeNormal} />
                                     </Form.Field>
-                                    {/*<Form.Field>
-                                            <label>Nova Data Inicio:</label>
-                                            <Input required type='date' name='dataInicioNovo'  value={this.state.dataInicioNovo}  placeholder='Nova Data Início' onChange={this.handleChange} />
-                                        </Form.Field>
-                                        <Form.Field>
-                                            <label>Nova Data Fim:</label>
-                                            <Input required type='date' name='dataFimNovo'  value={this.state.dataFimNovo} placeholder='Nova Data Fim' onChange={this.handleChange} />
-                                        </Form.Field>*/}
                                     <Form.Field>
                                         <label>Nova Data de Início Prevista:</label>
                                         <DatePicker

@@ -21,8 +21,11 @@ class Stories extends Component {
             equipeProj: {},
             scrumMasterProj: '',
             descProj: '',
+            dataInicioProj: new Date(),
+            dataFimProj: new Date(),
             concluidas: '',
             quantStories: '',
+            quantPoints:'',
             titulo: '',
             descricao: '',
             dataInicio: new Date(),
@@ -75,6 +78,17 @@ class Stories extends Component {
         this.handleChange({ endDate })
     };
 
+    dataFormatada = (dataPraFormatar) => {
+        console.log(dataPraFormatar)
+        let date = new Date(`${dataPraFormatar}`);
+        let dia = date.getDate();
+        let mes = date.getMonth();
+        mes+=1;
+        let ano = date.getFullYear();
+        console.log('data:', dia + '/' + mes + '/' + ano);
+        return (<p>{dia + '/' + mes + '/' + ano}</p>)
+    }
+
     //Enviar o formulário e guardar a nova story no Banco de dados
     handleSubmit = e => {
         e.preventDefault();
@@ -126,6 +140,8 @@ class Stories extends Component {
                     stories: projeto.stories,
                     descProj: projeto.descricao,
                     equipeProj: projeto.equipeProj,
+                    dataInicioProj: projeto.dataInicioPrevista,
+                    dataFimProj: projeto.dataFimPrevista,
                     scrumMasterProj: projeto.scrumMasterProj,
                     estaCarregando: false,
                 });
@@ -148,6 +164,7 @@ class Stories extends Component {
         storiesRef.on('value', (snapshot) => {
             let concluidas = 0;
             let quantStories = 0;
+            let quantPoints = 0;
             let stories = snapshot.val();
 
             for (let key in stories) {
@@ -157,12 +174,15 @@ class Stories extends Component {
                 if (stories[key].situacao === 'Concluida') {
                     concluidas += 1;
                 }
+                
+                quantPoints += stories[key].storyPoint;
 
             }
 
             this.setState({
                 concluidas: concluidas,
-                quantStories: quantStories
+                quantStories: quantStories,
+                quantPoints: quantPoints
             });
         });
 
@@ -187,6 +207,8 @@ class Stories extends Component {
                     <Header as='h2' >
                         Projeto: {this.props.match.params.nome}
                         <Header.Subheader>Descrição: {this.state.descProj}</Header.Subheader>
+                        <Header.Subheader>Data Início: {this.dataFormatada(this.state.dataInicioProj)}</Header.Subheader> 
+                        <Header.Subheader>Data Fim: {this.dataFormatada(this.state.dataFimProj)}</Header.Subheader>
                         <Divider />
                         <Participantes
                             equipeProj={this.state.equipeProj}
@@ -203,10 +225,12 @@ class Stories extends Component {
                     <Divider />
                     {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
                     <Button onClick={this.showAndHide} floated='left' color='teal'>
-                        <Icon name='plus' />Nova Story
+                        <Icon name='plus' />Nova Estória
                 </Button>
-                    <Modal open={this.state.openAndClose}>
-                        <Modal.Header color='teal'>Cadastrar Nova Story</Modal.Header>
+                    <Modal 
+                    dimmer='blurring'
+                    open={this.state.openAndClose}>
+                        <Modal.Header color='teal'>Cadastrar Nova Estória</Modal.Header>
                         <Modal.Content>
                             <Form onSubmit={this.handleSubmit}>
                                 <Form.Field>
@@ -215,7 +239,7 @@ class Stories extends Component {
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Descrição</label>
-                                    <textarea required value={this.state.descricao} type='text' name='descricao' rows='3' onChange={this.handleChangeNormal} />
+                                    <textarea required value={this.state.descricao} type='text' name='descricao' rows='3' placeholder='Descrição' onChange={this.handleChangeNormal} />
                                 </Form.Field>
                                 <Form.Field>
                                     <label>Data de Início Prevista:</label>
@@ -241,14 +265,6 @@ class Stories extends Component {
                                         placeholderText="DD/MM/AAAA"
                                     />
                                 </Form.Field>
-                                {/*<Form.Field>
-                                    <label>Data Início</label>
-                                    <input required type='date' name='dataInicio' placeholder='Data Início' onChange={this.handleChange} />
-                                </Form.Field>
-                                <Form.Field>
-                                    <label>Data Fim</label>
-                                    <input required type='date' name='dataFim' placeholder='Data Fim' onChange={this.handleChange} />
-                                </Form.Field>*/}
                                 <Button onClick={this.showAndHide}>Cancelar</Button><Button type='submit'>Cadastrar</Button>
                             </Form>
                         </Modal.Content>

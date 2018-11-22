@@ -79,13 +79,27 @@ class Participante extends Component {
                         (this.props.email === this.props.scrumMasterProj) ?
                             (
                                 <Fragment>
-                                    Líder
+                                    Líder <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
+                                    <Modal
+                                    dimmer='blurring' 
+                                    open={this.state.openAndCloseDelete}>
+                                        <Modal.Header color='teal'>Remover {this.props.nome}?</Modal.Header>
+                                        <Modal.Content>
+                                            <Form onSubmit={this.handleSubmitRemove}>
+                                                <Form.Field>
+                                                    <Button onClick={this.showAndHide} color='red' inverted>Cancelar</Button><Button color='green' inverted type='submit'>Sim</Button>
+                                                </Form.Field>
+                                            </Form>
+                                        </Modal.Content>
+                                    </Modal>
                                 </Fragment>
                             ) :
                             (
                                 <Fragment>
                                     Membro <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
-                                    <Modal open={this.state.openAndCloseDelete}>
+                                    <Modal
+                                    dimmer='blurring' 
+                                    open={this.state.openAndCloseDelete}>
                                         <Modal.Header color='teal'>Remover {this.props.nome}?</Modal.Header>
                                         <Modal.Content>
                                             <Form onSubmit={this.handleSubmitRemove}>

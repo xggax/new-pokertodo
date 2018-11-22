@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+/*import React, { Component, Fragment } from 'react';
 import { db,} from './../config';
 import Highcharts from 'highcharts/highstock'
 import HighchartsReact from 'highcharts-react-official'
@@ -6,75 +6,7 @@ import HighchartsReact from 'highcharts-react-official'
 import HeaderCustom from '../Projeto/HeaderCustom';
 import { Container, Segment, Icon,} from 'semantic-ui-react'
 
-/*
-const options = {
-    title: {
-        text: 'Burndown Chart',
-        x: -20 //center
-      },
-      colors: ['blue', 'red'],
-      plotOptions: {
-        line: {
-          lineWidth: 3
-        },
-        tooltip: {
-          hideDelay: 200
-        }
-      },
-      subtitle: {
-        text: 'Sprint 1',
-        x: -20
-      },
-      xAxis: {
-        categories: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6',
-                     'Day 7', 'Day 8', 'Day 9', 'Day 10', 'Day 11', 'Day 12']
-      },
-      yAxis: {
-        title: {
-          text: 'Hours'
-        },
-        plotLines: [{
-          value: 0,
-          width: 1
-        }]
-      },
-      tooltip: {
-        valueSuffix: ' hrs',
-        crosshairs: true,
-        shared: true
-      },
-      legend: {
-        layout: 'vertical',
-        align: 'right',
-        verticalAlign: 'middle',
-        borderWidth: 0
-      },
-      series: [{
-        name: 'Ideal Burn',
-        color: 'rgba(255,0,0,0.25)',
-        lineWidth: 2,
-        data: [110, 100, 90, 80, 70, 60, 50, 40, 30, 20, 10, 0]
-      }, {
-        name: 'Actual Burn',
-        color: 'rgba(0,120,200,0.75)',
-        marker: {
-          radius: 6
-        },
-        data: [100, 110, 125, 95, 64, 76, 62, 44, 35, 29, 18, 2]
-      }]
-  }
-*/
-/*
-const data = [
-    { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-    { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-    { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-    { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-    { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-    { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-    { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-];
-*/
+
 class Burndown extends Component {
 
     constructor(props) {
@@ -89,6 +21,7 @@ class Burndown extends Component {
             descProj: '',
             concluidas: '',
             quantStories: '',
+            quantPoints:'',
             options: {},
 
         }
@@ -148,7 +81,7 @@ class Burndown extends Component {
                 },
                 yAxis: {
                   title: {
-                    text: 'Hours'
+                    text: 'Pontos'
                   },
                   plotLines: [{
                     value: 0,
@@ -156,7 +89,7 @@ class Burndown extends Component {
                   }]
                 },
                 tooltip: {
-                  valueSuffix: ' hrs',
+                  valueSuffix: ' pts',
                   crosshairs: true,
                   shared: true
                 },
@@ -191,32 +124,36 @@ class Burndown extends Component {
     }
 
     totalConcluidas = () => {
-        const idSubmit = this.props.match.params.id;
-        const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
+      const idSubmit = this.props.match.params.id;
+      const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
 
-        storiesRef.on('value', (snapshot) => {
-            let concluidas = 0;
-            let quantStories = 0;
-            let stories = snapshot.val();
+      storiesRef.on('value', (snapshot) => {
+          let concluidas = 0;
+          let quantStories = 0;
+          let quantPoints = 0;
+          let stories = snapshot.val();
 
-            for (let key in stories) {
+          for (let key in stories) {
 
-                quantStories += 1
+              quantStories += 1
 
-                if (stories[key].situacao === 'Concluida') {
-                    concluidas += 1;
-                }
+              if (stories[key].situacao === 'Concluida') {
+                  concluidas += 1;
+              }
+              
+              quantPoints += stories[key].storyPoint;
 
-            }
+          }
 
-            this.setState({
-                concluidas: concluidas,
-                quantStories: quantStories
-            });
-        });
+          this.setState({
+              concluidas: concluidas,
+              quantStories: quantStories,
+              quantPoints: quantPoints
+          });
+      });
 
 
-    }
+  }
 
 
     render() {
@@ -243,3 +180,4 @@ class Burndown extends Component {
 }
 
 export default Burndown;
+*/

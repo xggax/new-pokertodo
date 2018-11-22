@@ -4,10 +4,8 @@ import { Grid, Segment, Header, Icon, List, Modal, Button, Input, Form, ListCont
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
-import moment from 'moment';
-import 'moment/locale/pt-br';
 
-import { db } from './../config';
+import { db, auth } from './../config';
 
 class Projeto extends Component {
     constructor(props) {
@@ -113,6 +111,7 @@ class Projeto extends Component {
     renomearItem = (e) => {
         e.preventDefault();
         const idProj = this.props.id;
+        let atualizadoPor = auth.currentUser.displayName;
 
         const projetoRef = db.ref().child('projetos').child(`${idProj}`);
         projetoRef.once('value', (snapshot) => {
@@ -122,6 +121,7 @@ class Projeto extends Component {
             updates['projetos/' + idProj + '/descricao'] = this.state.descricaoProj;
             updates['projetos/' + idProj + '/dataInicioPrevista'] = this.state.dataInicioPrevista;
             updates['projetos/' + idProj + '/dataFimPrevista'] = this.state.dataFimPrevista;
+            updates['projetos/' + idProj + '/atualizadoPor'] = atualizadoPor;
 
             Object.keys(projeto.equipeProj).map(key => {
                 console.log('vai enviar!!!!')
@@ -130,6 +130,7 @@ class Projeto extends Component {
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/descricao'] = this.state.descricaoProj;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/dataInicioPrevista'] = this.state.dataInicioPrevista;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/dataFimPrevista'] = this.state.dataFimPrevista;
+                updates['projetosDoUsuario/' + key + '/' + idProj + '/atualizadoPor'] =  atualizadoPor;
                 console.log('enviou!!!!');
                 console.log('-------------------')
                 return db.ref().update(updates);
@@ -166,6 +167,7 @@ class Projeto extends Component {
                         <List.Item>
                             <Modal
                                 trigger={<Button onClick={this.handleOpenFechar} size='mini'>Sobre</Button>}
+                                dimmer='blurring'
                                 size='small'
                                 open={this.state.modalOpenFechar}
                                 onClose={this.handleCloseFechar}
@@ -184,7 +186,7 @@ class Projeto extends Component {
 
                                     <Header as='h3'>Data Final Prevista: {this.dataFormatada(this.props.dataFimPrevista)}</Header>
 
-                                    <h3>Equipe:</h3>
+                                    <Header as='h3'>Equipe:</Header>
                                     <List>
                                         {
                                             this.props.equipe && Object.keys(this.props.equipe).map(key => {
@@ -194,7 +196,7 @@ class Projeto extends Component {
                                                             <Image avatar src={this.props.equipe[key].foto} />
                                                             <ListContent>
                                                                 <List.Header as='h3'>
-                                                                    {this.props.equipe[key].nome}
+                                                                    {this.props.equipe[key].nome} {this.props.equipe[key].scrumMasterProj ? <Fragment><Icon circular name='chess king' /></Fragment> : <Fragment><Icon circular name='chess pawn' /></Fragment>} 
                                                                 </List.Header>
                                                             </ListContent>
                                                         </List.Item>
@@ -203,6 +205,10 @@ class Projeto extends Component {
                                             })
                                         }
                                     </List>
+                                    { this.props.atualizadoPor ? <Header as='h5'>Última atualização desses dados: {this.props.atualizadoPor}.</Header> : null}
+                                    <br/>
+                                    <p><Icon name='chess king' /> Líder</p>
+                                    <p><Icon name='chess pawn' /> Membro</p>
                                 </Modal.Content>
                                 <Modal.Actions>
                                     <Button onClick={this.handleCloseFechar} color='red' inverted>
@@ -213,6 +219,7 @@ class Projeto extends Component {
                         </List.Item>
                         <List.Item>
                             <Modal
+                                dimmer='blurring'
                                 trigger={<Button onClick={this.edit} size='mini'>Atualizar</Button>}
                                 size='small'
                                 open={this.state.modalOpenRenomear}
@@ -239,13 +246,11 @@ class Projeto extends Component {
                                                 onChange={this.handleChangeDataInicio}
                                                 dateFormat="dd/MM/yyyy"
                                                 placeholderText="DD/MM/AAAA"
-                                                todayButton={"Vandaag"}
                                             />
                                         </Form.Field>
                                         <Form.Field>
                                             <label>Novo Data Fim Prevista:</label>
                                             <DatePicker
-                                                todayButton={"Vandaag"}
                                                 selected={this.state.dataFimPrevista}
                                                 selectsEnd
                                                 startDate={this.state.dataFimPrevista}
@@ -264,11 +269,12 @@ class Projeto extends Component {
                                 </Modal.Content>
                             </Modal>
                         </List.Item>
-                        <List.Item>
+                        {/*<List.Item>
                             <Link to={`/burndown/${this.props.titulo}/${this.props.id}`}><Button size='mini'>Burndown</Button></Link>
-                        </List.Item>
+                        </List.Item>*/}
                         <List.Item>
                             <Modal
+                                dimmer='blurring'
                                 trigger={<Button onClick={this.handleOpenExcluir} size='mini'>Excluir</Button>}
                                 size='small'
                                 open={this.state.modalOpenExcluir}
