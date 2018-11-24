@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Segment, Header, Icon, ListItem, List, Button, Modal, Input, Form, TextArea } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Segment, Header, Icon, ListItem, List, Button, Modal, Input, Form, TextArea, Label, ModalContent, ModalActions } from 'semantic-ui-react';
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
@@ -21,9 +20,9 @@ class Story extends Component {
             pontosNovo: '',
             atualizadoPorNovo: '',
             situacao: '',
-
             //modals
             modalOpenUpdate: false,
+            modalOpenView: false,
         }
     }
 
@@ -56,6 +55,14 @@ class Story extends Component {
         this.setState({ modalOpenUpdate: true })
     }
 
+    hideView = () => {
+        this.setState({ modalOpenView: false })
+    }
+
+    showView = () => {
+        this.setState({ modalOpenView: true })
+    }
+
     handleChangeNormal = event => {
 
         const target = event.target;
@@ -69,13 +76,13 @@ class Story extends Component {
     }
 
     dataFormatada = (dataPraFormatar) => {
-        console.log(dataPraFormatar)
+        //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
         let mes = date.getMonth();
         mes += 1;
         let ano = date.getFullYear();
-        console.log('data:', dia + '/' + mes + '/' + ano);
+        //console.log('data:', dia + '/' + mes + '/' + ano);
         return (<Fragment>{dia + '/' + mes + '/' + ano}</Fragment>)
     }
 
@@ -163,32 +170,77 @@ class Story extends Component {
                 {/* Os parâmetros passados pelas rotas chegam no componente através da propriedade params.
                 Poderíamos acessar o parâmetro id de dentro do componente respectivo à rota */
                 }
-                < Segment >
+                < Segment textAlign='left'>
                     <List size={"tiny"}>
-                        <Header as='h4'>Título: {this.props.titulo}
+                        <Header as='h4'>Título: {this.props.titulo.substr(0, 20)}
                             <Header.Subheader>
-                                <List.Item>
-                                    <p>Descrição: {this.props.descricao}</p>
+                                <List.Item >
+                                    Descrição: {this.props.descricao.substr(0, 15) + '...'}
                                 </List.Item>
                                 <ListItem>
-                                    <p>Data Inicio: {this.dataFormatada(this.props.dataInicio)}</p>
+                                    Data Inicio: {this.dataFormatada(this.props.dataInicio)}
                                 </ListItem>
                                 <ListItem>
-                                    <p>Data Fim: {this.dataFormatada(this.props.dataFim)}</p>
+                                    Data Fim: {this.dataFormatada(this.props.dataFim)}
                                 </ListItem>
-                                <ListItem>
-                                    <p>Progresso: {this.props.situacao}</p>
-                                </ListItem>
+                                {
+                                    (this.props.situacao) === 'A fazer' ? <ListItem>
+                                        Progresso:<Label size='tiny' color='red'>{this.props.situacao}</Label>
+                                    </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
+                                        Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
+                                    </ListItem> : <ListItem>
+                                                Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
+                                            </ListItem>
+                                }
                                 <ListItem>
                                     <p>Pontos: {this.props.pontos}</p>
                                 </ListItem>
                                 <ListItem>
-                                    <p>Atualizado por: {this.props.atualizadoPor}</p>
+                                    <p>Atualizado por: {this.props.atualizadoPor.substr(0,15)}</p>
                                 </ListItem>
                                 <br />
                             </Header.Subheader>
                         </Header>
                         {/*<Link to='/configurarPlanningPoker'><Button icon='clipboard outline' size='mini' /></Link>*/}
+                        <Button icon='eye' size='mini' onClick={this.showView} />
+                        <Modal
+                            size='small'
+                            open={this.state.modalOpenView}
+                            dimmer='blurring'
+                        >
+                            <Header icon='eye' content='Visualizar Detalhes' />
+                            <ModalContent>
+                                <Header as='h4'>Título: {this.props.titulo}</Header>
+                                        <List.Item >
+                                            Descrição: {this.props.descricao}
+                                        </List.Item>
+                                        <ListItem>
+                                            Data Inicio: {this.dataFormatada(this.props.dataInicio)}
+                                        </ListItem>
+                                        <ListItem>
+                                            Data Fim: {this.dataFormatada(this.props.dataFim)}
+                                        </ListItem>
+                                        {
+                                            (this.props.situacao) === 'A fazer' ? <ListItem>
+                                                Progresso:<Label size='tiny' color='red'>{this.props.situacao}</Label>
+                                            </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
+                                                Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
+                                            </ListItem> : <ListItem>
+                                                        Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
+                                                    </ListItem>
+                                        }
+                                        <ListItem>
+                                            <p>Pontos: {this.props.pontos}</p>
+                                        </ListItem>
+                                        <ListItem>
+                                            <p>Atualizado por: {this.props.atualizadoPor}</p>
+                                        </ListItem>
+                                        <br />
+                            </ModalContent>
+                            <ModalActions>
+                                <Button onClick={this.hideView}>Fechar</Button>
+                            </ModalActions>
+                        </Modal>
                         <Button onClick={this.edit} size='mini' icon='edit outline' />
                         <Modal
                             size='small'
@@ -237,13 +289,22 @@ class Story extends Component {
                                             <option value="Fazendo">Fazendo</option>
                                             <option value="Concluida">Concluída</option>
                                         </select>
-                                        {/*<Input type='text' name='progressoNovo' placeholder='Novo Status de Progresso' onChange={this.handleChange} />*/}
                                     </Form.Field>
                                     <Form.Field>
                                         <label>Nova Pontuação</label>
-                                        <Input required type='text' name='pontosNovo' value={this.state.pontosNovo} placeholder='Nova Pontuação' onChange={this.handleChangeNormal} />
+                                        <select value={this.state.pontosNovo} name="pontosNovo" onChange={this.handleChangeNormal}>
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="5">5</option>
+                                            <option value="8">8</option>
+                                            <option value="13">13</option>
+                                            <option value="20">20</option>
+                                            <option value="40">40</option>
+                                            <option value="100">100</option>
+                                        </select>
                                     </Form.Field>
-
                                     <Button onClick={this.hide} color='red' inverted>
                                         <Icon name='remove' /> Fechar
                                         </Button>

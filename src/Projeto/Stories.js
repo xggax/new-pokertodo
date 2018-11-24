@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { db, auth } from './../config';
-import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress } from 'semantic-ui-react'
+import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress, ListItem, ListContent } from 'semantic-ui-react'
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import HeaderCustom from './HeaderCustom';
 import Participantes from './Participantes';
 import Story from './Story';
+import ProductBacklog from './ProductBacklog';
 
 class Stories extends Component {
 
@@ -25,7 +26,7 @@ class Stories extends Component {
             dataFimProj: new Date(),
             concluidas: '',
             quantStories: '',
-            quantPoints:'',
+            quantPoints: '',
             titulo: '',
             descricao: '',
             dataInicio: new Date(),
@@ -53,8 +54,6 @@ class Stories extends Component {
 
         this.setState({
             [name]: value,
-            situacao: 'A fazer',
-            storyPoint: '?',
             atualizadoPor: auth.currentUser.displayName
         })
     }
@@ -79,13 +78,13 @@ class Stories extends Component {
     };
 
     dataFormatada = (dataPraFormatar) => {
-        console.log(dataPraFormatar)
+        //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
         let mes = date.getMonth();
-        mes+=1;
+        mes += 1;
         let ano = date.getFullYear();
-        console.log('data:', dia + '/' + mes + '/' + ano);
+        //console.log('data:', dia + '/' + mes + '/' + ano);
         return (<p>{dia + '/' + mes + '/' + ano}</p>)
     }
 
@@ -174,7 +173,7 @@ class Stories extends Component {
                 if (stories[key].situacao === 'Concluida') {
                     concluidas += 1;
                 }
-                
+
                 quantPoints += stories[key].storyPoint;
 
             }
@@ -199,7 +198,6 @@ class Stories extends Component {
 
             <Fragment>
                 <HeaderCustom />
-                {/*<h2>{JSON.stringify(this.state.stories)}</h2>*/}
                 <Container>
                     <Segment piled>
                         <Header as='h2'>Quadro Kanban</Header>
@@ -207,29 +205,47 @@ class Stories extends Component {
                     <Header as='h2' >
                         Projeto: {this.props.match.params.nome}
                         <Header.Subheader>Descrição: {this.state.descProj}</Header.Subheader>
-                        <Header.Subheader>Data Início: {this.dataFormatada(this.state.dataInicioProj)}</Header.Subheader> 
-                        <Header.Subheader>Data Fim: {this.dataFormatada(this.state.dataFimProj)}</Header.Subheader>
-                        <Divider />
-                        <Participantes
-                            equipeProj={this.state.equipeProj}
-                            scrumMasterProj={this.state.scrumMasterProj}
-                            idProj={this.props.match.params.id}
-                            carregaStories={this.carregaStories}
-                        //carregaStories= {this.carregaStories}
-                        />
-                        <Divider />
                     </Header>
+                    <List horizontal>
+                        <ListItem>
+                            <ListContent verticalAlign='middle'>
+                                <Icon name='calendar outline'></Icon>Data Início: {this.dataFormatada(this.state.dataInicioProj)}
+                            </ListContent>
+                        </ListItem>
+                        <ListItem>
+                            <ListContent verticalAlign='middle'>
+                                <Icon name='calendar alternate'></Icon>Data Fim: {this.dataFormatada(this.state.dataFimProj)}
+                            </ListContent>
+                        </ListItem>
+                    </List>
+                    <Divider />
+                    <Participantes
+                        equipeProj={this.state.equipeProj}
+                        scrumMasterProj={this.state.scrumMasterProj}
+                        idProj={this.props.match.params.id}
+                        carregaStories={this.carregaStories}
+                    //carregaStories= {this.carregaStories}
+                    />
                     <Divider />
                     <Header as='h3'>Concluídas</Header>
                     <Progress color='teal' value={this.state.concluidas} total={this.state.quantStories} progress='ratio' />
                     <Divider />
                     {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
+                    <ProductBacklog
+                        idProj={this.props.match.params.id}
+                        stories={this.state.stories}
+                        descProj={this.state.descProj}
+                        equipeProj={this.state.equipeProj}
+                        dataInicioProj={this.state.dataInicioProj}
+                        dataFimProj={this.state.dataFimProj}
+                        scrumMasterProj={this.state.scrumMasterProj}
+                    />
                     <Button onClick={this.showAndHide} floated='left' color='teal'>
                         <Icon name='plus' />Nova Estória
-                </Button>
-                    <Modal 
-                    dimmer='blurring'
-                    open={this.state.openAndClose}>
+                    </Button>
+                    <Modal
+                        dimmer='blurring'
+                        open={this.state.openAndClose}>
                         <Modal.Header color='teal'>Cadastrar Nova Estória</Modal.Header>
                         <Modal.Content>
                             <Form onSubmit={this.handleSubmit}>
@@ -264,6 +280,21 @@ class Stories extends Component {
                                         dateFormat="dd/MM/yyyy"
                                         placeholderText="DD/MM/AAAA"
                                     />
+                                </Form.Field>
+                                <Form.Field>
+                                    <label>Nova Pontuação</label>
+                                    <select value={this.state.storyPoint} name="storyPoint" onChange={this.handleChangeNormal}>
+                                        <option value="0">0</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="5">5</option>
+                                        <option value="8">8</option>
+                                        <option value="13">13</option>
+                                        <option value="20">20</option>
+                                        <option value="40">40</option>
+                                        <option value="100">100</option>
+                                    </select>
                                 </Form.Field>
                                 <Button onClick={this.showAndHide}>Cancelar</Button><Button type='submit'>Cadastrar</Button>
                             </Form>

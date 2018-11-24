@@ -240,7 +240,7 @@ class ProjetosLista extends Component {
                                 <Header as='h3'>Acesse seus projetos</Header>
                                 <Button onClick={this.show} floated='left' color='teal'>
                                     <Icon name='plus' /> Novo Projeto
-                            </Button>
+                                </Button>
                                 <Modal open={this.state.open}>
                                     <Modal.Header color='teal'>Cadastrar Novo Projeto</Modal.Header>
                                     <Modal.Content>
