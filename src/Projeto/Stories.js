@@ -318,6 +318,7 @@ class Stories extends Component {
                                                 this.state.stories && Object.keys(this.state.stories)
                                                     .map(
                                                         key => {
+
                                                             return (this.state.stories[key].situacao === 'A fazer' ?
                                                                 <Story
                                                                     key={key}
@@ -387,6 +388,7 @@ class Stories extends Component {
                                                 this.state.stories && Object.keys(this.state.stories)
                                                     .map(
                                                         key => {
+                                                            //console.log(this.state.stories[key].comentarios)
                                                             // isMember ? "$2.00" : "$10.00"
                                                             return (this.state.stories[key].situacao === 'Concluida' ?
                                                                 <Story

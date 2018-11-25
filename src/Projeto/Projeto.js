@@ -77,13 +77,13 @@ class Projeto extends Component {
     };
 
     dataFormatada = (dataPraFormatar) => {
-        console.log(dataPraFormatar)
+        //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
         let mes = date.getMonth();
         mes+=1;
         let ano = date.getFullYear();
-        console.log('data:', dia + '/' + mes + '/' + ano);
+        //console.log('data:', dia + '/' + mes + '/' + ano);
         return (<p>{dia + '/' + mes + '/' + ano}</p>)
     }
 

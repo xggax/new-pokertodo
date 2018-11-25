@@ -33,7 +33,7 @@ class Participantes extends Component {
 
         queryBuscaNosUsuarios.once('value', (snapshot) => {
             const usuarioBuscado = snapshot.val();
-            console.log('usuarioBuscado: ', usuarioBuscado);
+            //console.log('usuarioBuscado: ', usuarioBuscado);
             //const chaveUsuarioBuscado = Object.keys(usuarioBuscado)[0];
             //console.log('usuarioBuscado[chave]: ', usuarioBuscado[chaveUser]);
             if (usuarioBuscado) {
@@ -45,13 +45,13 @@ class Participantes extends Component {
                         console.log('Já tá na equipe! ');
                     } else {
                         const chaveUsuarioBuscado = Object.keys(usuarioBuscado)[0];
-                        console.log('chave do usuario buscado', chaveUsuarioBuscado);
+                        //console.log('chave do usuario buscado', chaveUsuarioBuscado);
 
                         const projetoRef = db.ref(`projetos/${idProj}`).orderByKey();
                         projetoRef.once('value', (snapshot) => {
                             let projeto = snapshot.val();
-                            console.log('chave do projeto cadastrado no usuario:', snapshot.key);
-                            console.log('projeto cadastrado no usuario:', snapshot.val());
+                            //console.log('chave do projeto cadastrado no usuario:', snapshot.key);
+                            //console.log('projeto cadastrado no usuario:', snapshot.val());
                             let updates1 = {};
                             let updates2 = {};
 
@@ -73,11 +73,11 @@ class Participantes extends Component {
 
                             Object.keys(projeto.equipeProj).map(key => {
                                 //const usuariosDoProjeto = db.ref().child('projetosDoUsario').child(`${key}`);
-                                console.log('vai enviar!!!!')
-                                console.log('key: ', key);
+                                //console.log('vai enviar!!!!')
+                                //console.log('key: ', key);
                                 updates2['projetosDoUsuario/' + key + '/' + idProj] = projeto;
-                                console.log('enviou!!!!');
-                                console.log('-------------------')
+                                //console.log('enviou!!!!');
+                                //console.log('-------------------')
                                 return db.ref().update(updates2);
                             })
 

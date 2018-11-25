@@ -5,6 +5,7 @@ import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
 
 import { db, auth } from '../config';
+import ComentariosLista from './ComentariosLista';
 
 class Story extends Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class Story extends Component {
             pontosNovo: '',
             atualizadoPorNovo: '',
             situacao: '',
+            comentarios:{},
             //modals
             modalOpenUpdate: false,
             modalOpenView: false,
@@ -28,9 +30,21 @@ class Story extends Component {
 
     componentDidMount = () => {
         this.loadData()
+        this.carregaComentarios();
+    }
+
+    carregaComentarios = () => {
+        let comentariosRef = db.ref().child('projetos').child(`${this.props.idProj}`).child('stories').child(`${this.props.id}`).child('comentarios')
+        comentariosRef.on('value', snapshot => {
+            let comentarios = snapshot.val();
+            this.setState({
+                comentarios: comentarios,
+            })
+        })
     }
 
     loadData = () => {
+
         this.setState({
             tituloNovo: this.props.titulo,
             descricaoNovo: this.props.descricao,
@@ -196,13 +210,13 @@ class Story extends Component {
                                     <p>Pontos: {this.props.pontos}</p>
                                 </ListItem>
                                 <ListItem>
-                                    <p>Atualizado por: {this.props.atualizadoPor.substr(0,15)}</p>
+                                    <p>Última Atualização: {this.props.atualizadoPor.substr(0, 15)}</p>
                                 </ListItem>
                                 <br />
                             </Header.Subheader>
                         </Header>
                         {/*<Link to='/configurarPlanningPoker'><Button icon='clipboard outline' size='mini' /></Link>*/}
-                        <Button icon='eye' size='mini' onClick={this.showView} />
+                        <Button alt='Visualizar Detalhes' icon='eye' size='mini' onClick={this.showView} />
                         <Modal
                             size='small'
                             open={this.state.modalOpenView}
@@ -211,31 +225,42 @@ class Story extends Component {
                             <Header icon='eye' content='Visualizar Detalhes' />
                             <ModalContent>
                                 <Header as='h4'>Título: {this.props.titulo}</Header>
-                                        <List.Item >
-                                            Descrição: {this.props.descricao}
-                                        </List.Item>
-                                        <ListItem>
-                                            Data Inicio: {this.dataFormatada(this.props.dataInicio)}
-                                        </ListItem>
-                                        <ListItem>
-                                            Data Fim: {this.dataFormatada(this.props.dataFim)}
-                                        </ListItem>
-                                        {
-                                            (this.props.situacao) === 'A fazer' ? <ListItem>
-                                                Progresso:<Label size='tiny' color='red'>{this.props.situacao}</Label>
-                                            </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
-                                                Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
-                                            </ListItem> : <ListItem>
-                                                        Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
-                                                    </ListItem>
-                                        }
-                                        <ListItem>
-                                            <p>Pontos: {this.props.pontos}</p>
-                                        </ListItem>
-                                        <ListItem>
-                                            <p>Atualizado por: {this.props.atualizadoPor}</p>
-                                        </ListItem>
-                                        <br />
+                                <List.Item >
+                                    Descrição: {this.props.descricao}
+                                </List.Item>
+                                <ListItem>
+                                    Data Inicio: {this.dataFormatada(this.props.dataInicio)}
+                                </ListItem>
+                                <ListItem>
+                                    Data Fim: {this.dataFormatada(this.props.dataFim)}
+                                </ListItem>
+                                {
+                                    (this.props.situacao) === 'A fazer' ? <ListItem>
+                                        Progresso:<Label size='tiny' color='red'>{this.props.situacao}</Label>
+                                    </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
+                                        Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
+                                    </ListItem> : <ListItem>
+                                                Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
+                                            </ListItem>
+                                }
+                                <ListItem>
+                                    <p>Pontos: {this.props.pontos}</p>
+                                </ListItem>
+                                <ListItem>
+                                    <p>Última atualização: {this.props.atualizadoPor}</p>
+                                </ListItem>
+                                <br/>
+                                <ListItem><Header as='h4'>Comentários</Header></ListItem>
+                                <br/>
+                                <ListItem>
+                                    <ComentariosLista
+                                        comentarios= {this.state.comentarios}
+                                        idProj= {this.props.idProj}
+                                        idStory = {this.props.id}
+                                        carregaStories = {this.props.handleLoad}
+                                    />
+                                </ListItem>
+                                <br />
                             </ModalContent>
                             <ModalActions>
                                 <Button onClick={this.hideView}>Fechar</Button>
