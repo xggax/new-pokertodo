@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { db, auth } from './../config';
-import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress, ListItem, ListContent } from 'semantic-ui-react'
+import { Link } from 'react-router-dom';
+import { Container, Segment, Grid, Button, Header, List, Modal, Icon, Form, Divider, Progress, ListItem, ListContent, ListHeader } from 'semantic-ui-react'
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
@@ -24,9 +25,10 @@ class Stories extends Component {
             descProj: '',
             dataInicioProj: new Date(),
             dataFimProj: new Date(),
-            concluidas: '',
+            quantConcluidas: '',
             quantStories: '',
             quantPoints: '',
+            quantPointsConcluidos: '',
             titulo: '',
             descricao: '',
             dataInicio: new Date(),
@@ -81,7 +83,7 @@ class Stories extends Component {
         //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
-        if(dia<10){
+        if (dia < 10) {
             dia = `0${dia}`
         }
         let mes = date.getMonth();
@@ -167,6 +169,7 @@ class Stories extends Component {
             let concluidas = 0;
             let quantStories = 0;
             let quantPoints = 0;
+            let quantPointsConcluidos = 0;
             let stories = snapshot.val();
 
             for (let key in stories) {
@@ -175,6 +178,7 @@ class Stories extends Component {
 
                 if (stories[key].situacao === 'Concluida') {
                     concluidas += 1;
+                    quantPointsConcluidos += parseInt(`0${stories[key].storyPoint}`, 10);
                 }
 
                 quantPoints += parseInt(`0${stories[key].storyPoint}`, 10);
@@ -182,7 +186,8 @@ class Stories extends Component {
             }
 
             this.setState({
-                concluidas: concluidas,
+                quantPointsConcluidos: quantPointsConcluidos,
+                quantConcluidas: concluidas,
                 quantStories: quantStories,
                 quantPoints: quantPoints
             });
@@ -230,9 +235,30 @@ class Stories extends Component {
                     //carregaStories= {this.carregaStories}
                     />
                     <Divider />
-                    <Header as='h3'>Total de Pontos: {this.state.quantPoints}</Header>
-                    <Header as='h3'>Concluídas:</Header>
-                    <Progress color='teal' value={this.state.concluidas} total={this.state.quantStories} progress='ratio' />
+                    <Link to={`/burndown/${this.props.match.params.nome}/${this.props.match.params.id}`}>
+                        <List floated='left' horizontal>
+                            <ListItem><Icon color='teal' name='chart line' /></ListItem>
+                            <ListItem><List.Header>BURNDOWN CHART</List.Header></ListItem>
+                        </List>
+                    </Link>
+                    <br /><br/>
+                    <List floated='left' horizontal>
+                        <ListItem>
+                            <ListHeader>Total de Pontos das Estórias: {this.state.quantPoints}</ListHeader>
+                        </ListItem>
+                        <ListItem>
+                            <ListHeader>Total de Pontos Concluídos: {this.state.quantPointsConcluidos}</ListHeader>
+                        </ListItem>
+                    </List>
+                    <br/>
+                    <Header as='h3'>Progresso de Concluídas:</Header>
+                    {
+                        this.state.quantConcluidas !== this.state.quantStories || this.state.quantStories === 0 ? 
+                        <Progress color='teal' value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio' />:
+                        <Progress success value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio'>Successo
+                        </Progress>
+                    }
+                    
                     <Divider />
                     {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
                     <ProductBacklog

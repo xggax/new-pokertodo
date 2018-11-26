@@ -210,7 +210,7 @@ class Projeto extends Component {
                                     </List>
                                     {this.props.atualizadoPor ? <Header as='h5'>Última atualização desses dados: {this.props.atualizadoPor}.</Header> : null}
                                     <br />
-                                    <p><Icon name='chess king' /> Líder</p>
+                                    <p><Icon name='chess king' /> Scrum Master</p>
                                     <p><Icon name='chess pawn' /> Membro</p>
                                 </Modal.Content>
                                 <Modal.Actions>

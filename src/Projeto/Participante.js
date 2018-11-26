@@ -79,7 +79,7 @@ class Participante extends Component {
                         (this.props.email === this.props.scrumMasterProj) ?
                             (
                                 <Fragment>
-                                    Líder <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
+                                    ScrumMaster <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
                                     <Modal
                                     dimmer='blurring' 
                                     open={this.state.openAndCloseDelete}>

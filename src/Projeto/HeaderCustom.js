@@ -87,13 +87,13 @@ class HeaderCustom extends Component {
 
             <div className="App">
                 <header className="App-header">
-                    <h1 className="App-title">Poker To Do</h1>
+                    <h1 className="App-title">To Do Scrum</h1>
                     {   
                             
                         this.state.estaLogado &&
                             (
                                 <Menu>
-                                    <Menu.Item><strong>PokerToDo</strong></Menu.Item>
+                                    <Menu.Item><strong>ToDoScrum</strong></Menu.Item>
                                     <Menu.Item as={Link} to='/'>Home</Menu.Item>
                                     <Menu.Item as={Link} to='/projetos'>Projetos</Menu.Item>
                                     <Menu.Menu position='right'>
@@ -117,7 +117,7 @@ class HeaderCustom extends Component {
                             !this.state.estaLogado &&
                             (
                                 <Menu>
-                                    <Menu.Item><strong>PokerToDo</strong></Menu.Item>
+                                    <Menu.Item><strong>ToDoScrum</strong></Menu.Item>
                                     <Menu.Item as={Link} to='/'>Home</Menu.Item>
                                     <Menu.Menu position='right'>
                                         <Menu.Item><Icon name='user' /></Menu.Item>
