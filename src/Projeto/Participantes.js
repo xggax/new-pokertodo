@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import { db } from './../config';
-import {Input, Button, Header, List, Modal, Icon, Form, ListItem } from 'semantic-ui-react';
+import { Input, Button, Header, List, Modal, Icon, Form, ListItem } from 'semantic-ui-react';
 import Participante from './Participante';
 
 class Participantes extends Component {
@@ -115,13 +115,19 @@ class Participantes extends Component {
     render() {
         return (
             <List horizontal>
+                {/*
+                    this.props.scrumMasterProj === this.props.usuarioEmail ? 
+                    <Button title='Trocar Papel' onClick={this.showAndHide} floated='left' size='mini' color='teal'>
+                        <Icon name='user plus' floated='left' />
+                    </Button>: null
+                */}
                 <Button title='Adicionar Membro' onClick={this.showAndHide} floated='left' size='mini' color='teal'>
                     <Icon name='user plus' floated='left' />
                 </Button>
                 <ListItem>
-                    <Modal 
-                    dimmer='blurring'
-                    open={this.state.openAndClose}>
+                    <Modal
+                        dimmer='blurring'
+                        open={this.state.openAndClose}>
                         <Modal.Header color='teal'><Icon name='user plus' floated='left' /> Adicionar Membro</Modal.Header>
                         <Modal.Content>
                             <Header as='h3'>Atenção: O membro a ser adicionado ao projeto precisa, alguma vez, já ter autenticado-se nesse sistema!

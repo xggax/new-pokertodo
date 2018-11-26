@@ -21,7 +21,7 @@ class Story extends Component {
             pontosNovo: '',
             atualizadoPorNovo: '',
             situacao: '',
-            comentarios:{},
+            comentarios: {},
             //modals
             modalOpenUpdate: false,
             modalOpenView: false,
@@ -93,6 +93,9 @@ class Story extends Component {
         //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
+        if(dia<10){
+            dia = `0${dia}`
+        }
         let mes = date.getMonth();
         mes += 1;
         let ano = date.getFullYear();
@@ -175,7 +178,7 @@ class Story extends Component {
             db.ref().update(removes);
         })
 
-        this.props.handleLoad();
+        //this.props.handleLoad();
     }
 
     render() {
@@ -202,9 +205,10 @@ class Story extends Component {
                                         Progresso:<Label size='tiny' color='red'>{this.props.situacao}</Label>
                                     </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
                                         Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
-                                    </ListItem> : <ListItem>
-                                                Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
-                                            </ListItem>
+                                    </ListItem> : (this.props.situacao) === 'Concluida' ? <ListItem>
+                                        Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
+                                    </ListItem> : <ListItem>Progresso: <Label size='tiny' color='grey'>Não Definido</Label>
+                                                </ListItem>
                                 }
                                 <ListItem>
                                     <p>Pontos: {this.props.pontos}</p>
@@ -249,15 +253,15 @@ class Story extends Component {
                                 <ListItem>
                                     <p>Última atualização: {this.props.atualizadoPor}</p>
                                 </ListItem>
-                                <br/>
+                                <br />
                                 <ListItem><Header as='h4'>Comentários</Header></ListItem>
-                                <br/>
+                                <br />
                                 <ListItem>
                                     <ComentariosLista
-                                        comentarios= {this.state.comentarios}
-                                        idProj= {this.props.idProj}
-                                        idStory = {this.props.id}
-                                        carregaStories = {this.props.handleLoad}
+                                        comentarios={this.state.comentarios}
+                                        idProj={this.props.idProj}
+                                        idStory={this.props.id}
+                                        carregaStories={this.props.handleLoad}
                                     />
                                 </ListItem>
                                 <br />

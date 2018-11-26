@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Segment, Header, Icon, List, Modal, Button, Input, Form, ListContent, Image } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, List, Modal, Button, Input, Form, ListContent, Image, ListItem } from 'semantic-ui-react';
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
@@ -80,8 +80,11 @@ class Projeto extends Component {
         //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
+        if(dia<10){
+            dia = `0${dia}`
+        }
         let mes = date.getMonth();
-        mes+=1;
+        mes += 1;
         let ano = date.getFullYear();
         //console.log('data:', dia + '/' + mes + '/' + ano);
         return (<p>{dia + '/' + mes + '/' + ano}</p>)
@@ -130,7 +133,7 @@ class Projeto extends Component {
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/descricao'] = this.state.descricaoProj;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/dataInicioPrevista'] = this.state.dataInicioPrevista;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/dataFimPrevista'] = this.state.dataFimPrevista;
-                updates['projetosDoUsuario/' + key + '/' + idProj + '/atualizadoPor'] =  atualizadoPor;
+                updates['projetosDoUsuario/' + key + '/' + idProj + '/atualizadoPor'] = atualizadoPor;
                 console.log('enviou!!!!');
                 console.log('-------------------')
                 return db.ref().update(updates);
@@ -159,9 +162,9 @@ class Projeto extends Component {
             <Grid.Column >
                 <Segment >
                     <Link to={`/kanban/${this.props.titulo}/${this.props.id}`}>
-                        <Header as='h3' color='teal'>
-                            {this.props.titulo} <Icon name='sign in' size='mini' />
-                        </Header>
+                        <List horizontal>
+                            <ListItem><Icon color='teal' name='folder open outline' /></ListItem>
+                            <ListItem><List.Header>{this.props.titulo}</List.Header></ListItem></List>
                     </Link>
                     <List>
                         <List.Item>
@@ -196,7 +199,7 @@ class Projeto extends Component {
                                                             <Image avatar src={this.props.equipe[key].foto} />
                                                             <ListContent>
                                                                 <List.Header as='h3'>
-                                                                    {this.props.equipe[key].nome} {this.props.equipe[key].scrumMasterProj ? <Fragment><Icon circular name='chess king' /></Fragment> : <Fragment><Icon circular name='chess pawn' /></Fragment>} 
+                                                                    {this.props.equipe[key].nome} {this.props.equipe[key].scrumMasterProj ? <Fragment><Icon circular name='chess king' /></Fragment> : <Fragment><Icon circular name='chess pawn' /></Fragment>}
                                                                 </List.Header>
                                                             </ListContent>
                                                         </List.Item>
@@ -205,8 +208,8 @@ class Projeto extends Component {
                                             })
                                         }
                                     </List>
-                                    { this.props.atualizadoPor ? <Header as='h5'>Última atualização desses dados: {this.props.atualizadoPor}.</Header> : null}
-                                    <br/>
+                                    {this.props.atualizadoPor ? <Header as='h5'>Última atualização desses dados: {this.props.atualizadoPor}.</Header> : null}
+                                    <br />
                                     <p><Icon name='chess king' /> Líder</p>
                                     <p><Icon name='chess pawn' /> Membro</p>
                                 </Modal.Content>

@@ -31,8 +31,8 @@ class Stories extends Component {
             descricao: '',
             dataInicio: new Date(),
             dataFim: new Date(),
-            situacao: '',
-            storyPoint: '',
+            situacao: 'A fazer',
+            storyPoint: '0',
             atualizadoPor: '',
 
         }
@@ -81,6 +81,9 @@ class Stories extends Component {
         //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
+        if(dia<10){
+            dia = `0${dia}`
+        }
         let mes = date.getMonth();
         mes += 1;
         let ano = date.getFullYear();
@@ -174,7 +177,7 @@ class Stories extends Component {
                     concluidas += 1;
                 }
 
-                quantPoints += stories[key].storyPoint;
+                quantPoints += parseInt(`0${stories[key].storyPoint}`, 10);
 
             }
 
@@ -227,7 +230,8 @@ class Stories extends Component {
                     //carregaStories= {this.carregaStories}
                     />
                     <Divider />
-                    <Header as='h3'>Concluídas</Header>
+                    <Header as='h3'>Total de Pontos: {this.state.quantPoints}</Header>
+                    <Header as='h3'>Concluídas:</Header>
                     <Progress color='teal' value={this.state.concluidas} total={this.state.quantStories} progress='ratio' />
                     <Divider />
                     {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
