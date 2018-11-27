@@ -241,24 +241,24 @@ class Stories extends Component {
                             <ListItem><List.Header>BURNDOWN CHART</List.Header></ListItem>
                         </List>
                     </Link>
-                    <br /><br/>
+                    <br /><br />
                     <List floated='left' horizontal>
-                        <ListItem>
-                            <ListHeader>Total de Pontos das Estórias: {this.state.quantPoints}</ListHeader>
-                        </ListItem>
                         <ListItem>
                             <ListHeader>Total de Pontos Concluídos: {this.state.quantPointsConcluidos}</ListHeader>
                         </ListItem>
+                        <ListItem>
+                            <ListHeader>Total de Pontos das Estórias: {this.state.quantPoints}</ListHeader>
+                        </ListItem>
                     </List>
-                    <br/>
-                    <Header as='h3'>Progresso de Concluídas:</Header>
+                    <br />
+                    <Header as='h3'>Progresso das Estórias:</Header>
                     {
-                        this.state.quantConcluidas !== this.state.quantStories || this.state.quantStories === 0 ? 
-                        <Progress color='teal' value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio' />:
-                        <Progress success value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio'>Successo
+                        this.state.quantConcluidas !== this.state.quantStories || this.state.quantStories === 0 ?
+                            <Progress color='teal' value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio' /> :
+                            <Progress success value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio'>Successo
                         </Progress>
                     }
-                    
+
                     <Divider />
                     {/*<Link to=''><Button floated='left' color='teal'><Icon name='book' /> Product Backlog</Button></Link><br /><br />*/}
                     <ProductBacklog

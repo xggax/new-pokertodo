@@ -93,7 +93,7 @@ class Story extends Component {
         //console.log(dataPraFormatar)
         let date = new Date(`${dataPraFormatar}`);
         let dia = date.getDate();
-        if(dia<10){
+        if (dia < 10) {
             dia = `0${dia}`
         }
         let mes = date.getMonth();
@@ -181,40 +181,44 @@ class Story extends Component {
         //this.props.handleLoad();
     }
 
+    corDoProgresso = () => {
+        if (this.state.situacao === 'A fazer') {
+            return 'red';
+        }
+        if (this.state.situacao === 'Fazendo') {
+            return 'yellow';
+        }
+        if (this.state.situacao === 'Concluida') {
+            return 'green'
+        }
+    }
+
     render() {
         return (
             <Fragment >
                 {/* Os parâmetros passados pelas rotas chegam no componente através da propriedade params.
                 Poderíamos acessar o parâmetro id de dentro do componente respectivo à rota */
                 }
-                < Segment textAlign='left'>
+                < Segment textAlign='left' color={this.corDoProgresso()}>
                     <List size={"tiny"}>
                         <Header as='h4'>Título: {this.props.titulo.substr(0, 20)}
                             <Header.Subheader>
                                 <List.Item >
-                                    Descrição: {this.props.descricao.substr(0, 15) + '...'}
+                                    <Icon name='file alternate'></Icon>Descrição: {this.props.descricao.substr(0, 15) + '...'}
                                 </List.Item>
                                 <ListItem>
-                                    Data Inicio: {this.dataFormatada(this.props.dataInicio)}
+                                    <Icon name='calendar outline'></Icon>Data Inicio: {this.dataFormatada(this.props.dataInicio)}
                                 </ListItem>
                                 <ListItem>
-                                    Data Fim: {this.dataFormatada(this.props.dataFim)}
+                                    <Icon name='calendar alternate'></Icon>Data Fim: {this.dataFormatada(this.props.dataFim)}
                                 </ListItem>
-                                {
-                                    (this.props.situacao) === 'A fazer' ? <ListItem>
-                                        Progresso:<Label size='tiny' color='red'>{this.props.situacao}</Label>
-                                    </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
-                                        Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
-                                    </ListItem> : (this.props.situacao) === 'Concluida' ? <ListItem>
-                                        Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
-                                    </ListItem> : <ListItem>Progresso: <Label size='tiny' color='grey'>Não Definido</Label>
-                                                </ListItem>
-                                }
+                                <Icon name='chart line'></Icon>&nbsp;&nbsp;&nbsp;Progresso:<Label size='tiny' color={this.corDoProgresso()}>{this.props.situacao}</Label>
+                                <br />
                                 <ListItem>
-                                    <p>Pontos: {this.props.pontos}</p>
+                                    <Icon name='sort numeric up'></Icon>Pontos: {this.props.pontos}
                                 </ListItem>
                                 <ListItem>
-                                    <p>Última Atualização: {this.props.atualizadoPor.substr(0, 15)}</p>
+                                    <Icon name='info circle'></Icon>Última Atualização: {this.props.atualizadoPor.substr(0, 15)}
                                 </ListItem>
                                 <br />
                             </Header.Subheader>
@@ -341,7 +345,7 @@ class Story extends Component {
                                 </Form>
                             </Modal.Content>
                         </Modal>
-                        <Button icon='delete' size='mini' onClick={() => this.removeItem(this.props.id, this.props.idProj)} />
+                        <Button icon='trash alternate outline' size='mini' onClick={() => this.removeItem(this.props.id, this.props.idProj)} />
                     </List>
                 </Segment>
             </Fragment>
