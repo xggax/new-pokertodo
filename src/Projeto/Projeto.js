@@ -158,7 +158,6 @@ class Projeto extends Component {
 
     render() {
         return (
-            //this.state.equipe.includes(auth.currentUser.email) &&
             <Grid.Column >
                 <Segment >
                     <Link to={`/kanban/${this.props.titulo}/${this.props.id}`}>
@@ -263,7 +262,6 @@ class Projeto extends Component {
                                                 placeholderText="DD/MM/AAAA"
                                             />
                                         </Form.Field>
-                                        {/*<Input required type='text' name='dataFimPrevista' value={this.state.dataFimPrevista} onChange={this.handleChange} />*/}
                                         <Button onClick={this.handleCloseRenomear} color='red' inverted>
                                             <Icon name='remove' /> Fechar
                                         </Button>
@@ -272,9 +270,6 @@ class Projeto extends Component {
                                 </Modal.Content>
                             </Modal>
                         </List.Item>
-                        {/*<List.Item>
-                            <Link to={`/burndown/${this.props.titulo}/${this.props.id}`}><Button size='mini'>Burndown</Button></Link>
-                        </List.Item>*/}
                         <List.Item>
                             <Modal
                                 dimmer='blurring'

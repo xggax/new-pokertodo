@@ -153,6 +153,7 @@ class Stories extends Component {
         });
 
         this.totalConcluidas();
+    
     }
 
     showAndHide = () => {
