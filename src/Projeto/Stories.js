@@ -153,7 +153,6 @@ class Stories extends Component {
         });
 
         this.totalConcluidas();
-    
     }
 
     showAndHide = () => {
@@ -167,11 +166,11 @@ class Stories extends Component {
         const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
 
         storiesRef.on('value', (snapshot) => {
+            let stories = snapshot.val();
             let concluidas = 0;
             let quantStories = 0;
             let quantPoints = 0;
             let quantPointsConcluidos = 0;
-            let stories = snapshot.val();
 
             for (let key in stories) {
 
@@ -394,6 +393,7 @@ class Stories extends Component {
                                                                     titulo={this.state.stories[key].storiesTitulo}
                                                                     dataInicio={this.state.stories[key].dataInicio}
                                                                     dataFim={this.state.stories[key].dataFim}
+                                                                    dataFimReal={this.state.stories[key].dataFimReal}
                                                                     situacao={this.state.stories[key].situacao}
                                                                     pontos={this.state.stories[key].storyPoint}
                                                                     atualizadoPor={this.state.stories[key].atualizadoPor}
@@ -430,10 +430,12 @@ class Stories extends Component {
                                                                     titulo={this.state.stories[key].storiesTitulo}
                                                                     dataInicio={this.state.stories[key].dataInicio}
                                                                     dataFim={this.state.stories[key].dataFim}
+                                                                    dataFimReal={this.state.stories[key].dataFimReal}
                                                                     situacao={this.state.stories[key].situacao}
                                                                     pontos={this.state.stories[key].storyPoint}
                                                                     atualizadoPor={this.state.stories[key].atualizadoPor}
                                                                     handleLoad={this.carregaStories}
+
                                                                 /> : null)
 
                                                         })

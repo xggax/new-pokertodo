@@ -3,6 +3,8 @@ import { Segment, Header, Icon, ListItem, List, Button, Modal, Input, Form, Text
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
+import * as moment from 'moment';
+import 'moment/locale/pt-br';
 
 import { db, auth } from '../config';
 import ComentariosLista from './ComentariosLista';
@@ -140,6 +142,16 @@ class Story extends Component {
             storyPoint: this.state.pontosNovo,
             atualizadoPor: auth.currentUser.displayName,
         }
+        
+        if(updateStory.situacao === 'Concluida'){
+            updateStory.dataFimReal = moment().format('L');
+        }
+        if(updateStory.situacao === 'A fazer'){
+            updateStory.dataFimReal = null
+        }
+        if(updateStory.situacao === 'Fazendo'){
+            updateStory.dataFimReal = null
+        }
 
         const usuario = db.ref().child('usuarios').orderByChild('uid').equalTo(`${auth.currentUser.uid}`);
 
@@ -182,13 +194,13 @@ class Story extends Component {
     }
 
     corDoProgresso = () => {
-        if (this.state.situacao === 'A fazer') {
+        if (this.props.situacao === 'A fazer') {
             return 'red';
         }
-        if (this.state.situacao === 'Fazendo') {
+        if (this.props.situacao === 'Fazendo') {
             return 'yellow';
         }
-        if (this.state.situacao === 'Concluida') {
+        if (this.props.situacao === 'Concluida') {
             return 'green'
         }
     }
@@ -212,8 +224,9 @@ class Story extends Component {
                                 <ListItem>
                                     <Icon name='calendar alternate'></Icon>Data Fim: {this.dataFormatada(this.props.dataFim)}
                                 </ListItem>
-                                <Icon name='chart line'></Icon>&nbsp;&nbsp;&nbsp;Progresso:<Label size='tiny' color={this.corDoProgresso()}>{this.props.situacao}</Label>
-                                <br />
+                                <ListItem>
+                                    <Icon name='chart line'></Icon>Progresso:<Label size='tiny' color={this.corDoProgresso()}>{this.props.situacao}</Label>
+                                </ListItem>
                                 <ListItem>
                                     <Icon name='sort numeric up'></Icon>Pontos: {this.props.pontos}
                                 </ListItem>

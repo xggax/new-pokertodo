@@ -6,7 +6,7 @@ import * as moment from 'moment';
 import 'moment/locale/pt-br';
 
 import HeaderCustom from '../Projeto/HeaderCustom';
-import {db} from '../config'
+import { db } from '../config'
 
 
 class Burndown extends Component {
@@ -15,11 +15,11 @@ class Burndown extends Component {
         super(props)
         this.state = {
             stories: {},
-            descProj:'',
-            dataInicioProj:'',
-            dataFimProj:'',
+            descProj: '',
+            dataInicioProj: '',
+            dataFimProj: '',
             totalSprintEstimativa: 100,
-            duracaoDias: 0,
+            duracaoDiasIdeal: 0,
             quantStories: '',
             quantPoints: '',
             quantPointsIdealPorDia: 0,
@@ -44,15 +44,15 @@ class Burndown extends Component {
             if (projeto) {
                 let dataInicio = projeto.dataInicioPrevista;
                 dataInicio = moment(dataInicio).format('L');
-                console.log('Data Inicio: ', dataInicio);
+                //console.log('Data Inicio: ', dataInicio);
                 let dataFim = projeto.dataFimPrevista;
                 dataFim = moment(dataFim).format('L');
-                console.log('Data Fim: ', dataFim);
+                //console.log('Data FimIdeal: ', dataFim);
                 let start_date = moment(dataInicio, 'DD-MM-YYYY');
                 let end_date = moment(dataFim, 'DD-MM-YYYY');
                 let duracao = moment.duration(end_date.diff(start_date));
-                let duracaoDias = duracao.asDays();
-                console.log(duracaoDias);
+                let duracaoDiasIdeal = duracao.asDays();
+                //console.log('duração ideal: ', duracaoDiasIdeal);
                 //let dif = dataFim.diff(dataInicio, 'days')
                 //console.log(dif);
 
@@ -60,7 +60,7 @@ class Burndown extends Component {
                     stories: projeto.stories,
                     dataInicioProj: dataInicio,
                     dataFimProj: dataFim,
-                    duracaoDias: duracaoDias + 1,
+                    duracaoDiasIdeal: duracaoDiasIdeal + 1,
                     estaCarregando: false,
                 });
             }
@@ -79,12 +79,43 @@ class Burndown extends Component {
             let quantStories = 0;
             let quantPoints = 0;
             let quantPointsConcluidos = 0;
+            //const atual = [];
 
             for (let key in stories) {
 
                 quantStories += 1
 
-                if (stories[key].situacao === 'Concluida') {
+                if (stories[key].situacao === 'Concluida' && stories[key].dataFimReal) {
+                    // Colocando data inicio no formato do moment local
+                    let dataInicio = stories[key].dataInicio;
+                    dataInicio = moment(dataInicio).format('L');
+                    console.log('Data Inicio: ', dataInicio);
+                    
+                    //Data Fim Real já vem no formato do moment local
+                    let dataFimReal = stories[key].dataFimReal;
+                    let dataFimIdealFormatada = moment(stories[key].dataFim).format('L');
+                    console.log('Data FimIdeal: ', dataFimIdealFormatada);
+                    console.log('Data FimReal: ', dataFimReal);
+                    
+                    //Duração REAL
+                    let start_date = moment(dataInicio, 'DD-MM-YYYY');
+                    let end_date = moment(dataFimReal, 'DD-MM-YYYY');
+                    let duracaoReal = moment.duration(end_date.diff(start_date));
+                    let duracaoDiasReal = duracaoReal.asDays();
+                    console.log('Duração Real: ',duracaoDiasReal);
+                    console.log('Dia do término Real foi no dia: ',  duracaoDiasReal+1)
+
+                    //Duração IDEAL
+                    let start_date_ideal = moment(dataInicio, 'DD-MM-YYYY');
+                    let end_date_ideal = moment(dataFimIdealFormatada, 'DD-MM-YYYY');
+                    let duracaoIdeal = moment.duration(end_date_ideal.diff(start_date_ideal));
+                    let duracaoDiasIdeal = duracaoIdeal.asDays();
+                    console.log('Duração Ideal: ',duracaoDiasIdeal);
+                    console.log('Dia do término Ideal é no dia: ',  duracaoDiasIdeal+1)
+                    
+                    
+                    
+                    
                     concluidas += 1;
                     quantPointsConcluidos += parseInt(`0${stories[key].storyPoint}`, 10);
                 }
@@ -130,7 +161,7 @@ class Burndown extends Component {
                 },
                 categories: (() => {
                     const dias = [];
-                    let duracaoDias = this.state.duracaoDias
+                    let duracaoDias = this.state.duracaoDiasIdeal
                     let idealDias = 0;
                     for (let i = 0; i <= duracaoDias - 1; i++) {
                         idealDias = idealDias + 1
@@ -169,8 +200,8 @@ class Burndown extends Component {
                     const ideal = [];
                     //let totalSprintEstimativa = this.inserirdados.value.idpontos;
                     //let totalDias = this.inserirdados.value.iddias;
-                    let idealIncrement = this.state.totalSprintEstimativa / this.state.duracaoDias;
-                    for (let i = 1; i <= this.state.duracaoDias; i++) {
+                    let idealIncrement = this.state.totalSprintEstimativa / this.state.duracaoDiasIdeal;
+                    for (let i = 1; i <= this.state.duracaoDiasIdeal; i++) {
                         ideal.push(idealIncrement * i);
                     }
                     return ideal.reverse();
@@ -201,7 +232,7 @@ class Burndown extends Component {
                         constructorType={'chart'}
                         options={this.linhaIdeal()}
                     />
-                    <Segment>Quantidade de Pontos ideias por dia: {this.state.totalSprintEstimativa/this.state.duracaoDias}</Segment>
+                    <Segment>Quantidade de Pontos ideias por dia: {this.state.totalSprintEstimativa / this.state.duracaoDiasIdeal}</Segment>
                 </Container>
             </Fragment>
         );
