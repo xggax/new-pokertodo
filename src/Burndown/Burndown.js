@@ -21,8 +21,11 @@ class Burndown extends Component {
             totalSprintEstimativa: 100,
             duracaoDiasIdeal: 0,
             quantStories: '',
-            quantPoints: '',
+            quantPoints: 0,
+            quantConcluidas: '',
+            quantPointsConcluidos: '',
             quantPointsIdealPorDia: 0,
+            pontosRestantes: 0,
         }
 
     }
@@ -41,6 +44,7 @@ class Burndown extends Component {
         //Observador ligado pra atualizar nos outros
         projetoRef.on('value', (snapshot) => {
             let projeto = snapshot.val();
+            let start_date;
             if (projeto) {
                 let dataInicio = projeto.dataInicioPrevista;
                 dataInicio = moment(dataInicio).format('L');
@@ -48,7 +52,7 @@ class Burndown extends Component {
                 let dataFim = projeto.dataFimPrevista;
                 dataFim = moment(dataFim).format('L');
                 //console.log('Data FimIdeal: ', dataFim);
-                let start_date = moment(dataInicio, 'DD-MM-YYYY');
+                start_date = moment(dataInicio, 'DD-MM-YYYY');
                 let end_date = moment(dataFim, 'DD-MM-YYYY');
                 let duracao = moment.duration(end_date.diff(start_date));
                 let duracaoDiasIdeal = duracao.asDays();
@@ -64,12 +68,13 @@ class Burndown extends Component {
                     estaCarregando: false,
                 });
             }
+
+            this.totalConcluidas(start_date);
         });
 
-        this.totalConcluidas();
     }
 
-    totalConcluidas = () => {
+    totalConcluidas = (dataInicioProj) => {
         const idSubmit = this.props.match.params.id;
         const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
 
@@ -79,56 +84,132 @@ class Burndown extends Component {
             let quantStories = 0;
             let quantPoints = 0;
             let quantPointsConcluidos = 0;
-            //const atual = [];
+            const atual = [];
+            const pontosRestantes = [];
 
             for (let key in stories) {
 
                 quantStories += 1
 
                 if (stories[key].situacao === 'Concluida' && stories[key].dataFimReal) {
+
                     // Colocando data inicio no formato do moment local
                     let dataInicio = stories[key].dataInicio;
                     dataInicio = moment(dataInicio).format('L');
                     console.log('Data Inicio: ', dataInicio);
-                    
+
                     //Data Fim Real já vem no formato do moment local
                     let dataFimReal = stories[key].dataFimReal;
                     let dataFimIdealFormatada = moment(stories[key].dataFim).format('L');
                     console.log('Data FimIdeal: ', dataFimIdealFormatada);
                     console.log('Data FimReal: ', dataFimReal);
-                    
-                    //Duração REAL
-                    let start_date = moment(dataInicio, 'DD-MM-YYYY');
-                    let end_date = moment(dataFimReal, 'DD-MM-YYYY');
-                    let duracaoReal = moment.duration(end_date.diff(start_date));
-                    let duracaoDiasReal = duracaoReal.asDays();
-                    console.log('Duração Real: ',duracaoDiasReal);
-                    console.log('Dia do término Real foi no dia: ',  duracaoDiasReal+1)
 
-                    //Duração IDEAL
+                    //Duração IDEAL da estória
                     let start_date_ideal = moment(dataInicio, 'DD-MM-YYYY');
                     let end_date_ideal = moment(dataFimIdealFormatada, 'DD-MM-YYYY');
                     let duracaoIdeal = moment.duration(end_date_ideal.diff(start_date_ideal));
                     let duracaoDiasIdeal = duracaoIdeal.asDays();
-                    console.log('Duração Ideal: ',duracaoDiasIdeal);
-                    console.log('Dia do término Ideal é no dia: ',  duracaoDiasIdeal+1)
-                    
-                    
-                    
-                    
+                    console.log('Duração Ideal: ', duracaoDiasIdeal);
+                    console.log('Dia do término Ideal é no dia: ', duracaoDiasIdeal + 1)
+
+                    // Duração REAL da estória
+                    let start_date = moment(dataInicio, 'DD-MM-YYYY');
+                    let end_date = moment(dataFimReal, 'DD-MM-YYYY');
+                    let duracaoReal = moment.duration(end_date.diff(start_date));
+                    let duracaoDiasReal = duracaoReal.asDays();
+                    console.log('Duração Real: ', duracaoDiasReal);
+                    console.log('Dia do término Real foi no dia: ', duracaoDiasReal + 1)
+
+
+
+                    // Duração da Estória no sprint e Dia da conclusão no sprint
+                    let duracaoRealNoProj = moment.duration(end_date.diff(dataInicioProj));
+                    let duracaoDiasNoProj = duracaoRealNoProj.asDays();
+                    console.log('Duração Real no Projeto: ', duracaoDiasNoProj);
+                    let diaTerminoGrafico = duracaoDiasNoProj + 1;
+                    console.log('Dia do término Real no gráfico é no dia: ', diaTerminoGrafico);
+
+                    // Previnir que não entre no gráfico datas concluídas após o período correto
+
+                    //duração da estória no projeto < duração do projeto
+                    if (duracaoDiasNoProj < this.state.duracaoDiasIdeal) {
+                        atual.push({ dia: diaTerminoGrafico, pontuacaoConcluida: parseInt(`0${stories[key].storyPoint}`, 10) });
+                    }
+                    else{
+                        console.log('nada faz')
+                    }
+
+                    // incrementando como conluida
                     concluidas += 1;
+
+                    // incrementando a quantidade total de pontos conluidos
                     quantPointsConcluidos += parseInt(`0${stories[key].storyPoint}`, 10);
+
+
                 }
 
+                // incrementando a soma da quantidade total de pontos de todas as estórias
                 quantPoints += parseInt(`0${stories[key].storyPoint}`, 10);
 
+
+
             }
+
+            if (quantPointsConcluidos > 0) {
+
+                console.log('vetorNaoOrganizado: ', atual);
+                atual.sort(function (a, b) {
+                    return a.dia < b.dia ? -1 : a.dia > b.dia ? 1 : 0;
+                });
+                console.log('vetorAtualOrganizado: ', atual);
+
+                //Inicializando vetor com objetos de props: dias até a duração do projeto, e pontuação concluída inicial zero.
+
+                let atualFinal = [];
+                for (let i = 0; i <= this.state.duracaoDiasIdeal - 1; i++) {
+                    atualFinal.push({ dia: i, pontuacaoConcluida: 0 });
+                    pontosRestantes.push(0);
+                }
+                console.log('inicialização: ', atualFinal);
+
+                //atualFinal - vetor inicializado com todos os dias e pontuações concluídas com zero.
+                //quantPointsConcluidos - soma de todas as estórias concluídas, incrementada a cada verificação.
+                //quantPoints - soma de todas as estórias, incrementada depois da verificação se é concluída ou não.
+                //atual - vetor com objetos que tem as props do dia da conclusão(dia) e a pontuação concluída naquele dia(pontuacaoConcluida).
+                //this.state.duracaoDiasIdeal - duração estipulado para o projeto.
+
+                // Passando os dias de conclusão e a pontuação concluída do dia para o vetor final
+                for (let i = 0; i <= atual.length - 1; i++) {
+                    if (atual[i] !== undefined) {
+                        atualFinal[atual[i].dia].pontuacaoConcluida = atualFinal[atual[i].dia].pontuacaoConcluida + atual[i].pontuacaoConcluida;
+                        console.log(i);
+                    }
+                }
+                console.log('vetor atualFinal com dias e pontuação concluída naquele dia: ', atualFinal)
+
+                let resultado;
+                for (let i = 0; i <= this.state.duracaoDiasIdeal - 1; i++) {
+                    if (i === 0) {
+                        resultado = quantPoints - atualFinal[i].pontuacaoConcluida;
+                        pontosRestantes[i] = resultado;
+                    } else {
+                        resultado = resultado - atualFinal[i].pontuacaoConcluida;
+                        pontosRestantes[i] = resultado;
+                    }
+                }
+                console.log('pontos restantes', pontosRestantes);
+
+            } else {
+                console.log('Sem gráfico atual ainda!');
+            }
+
 
             this.setState({
                 quantPointsConcluidos: quantPointsConcluidos,
                 quantConcluidas: concluidas,
                 quantStories: quantStories,
-                quantPoints: quantPoints
+                totalSprintEstimativa: quantPoints,
+                pontosRestantes: pontosRestantes
             });
         });
 
@@ -214,7 +295,8 @@ class Burndown extends Component {
                 marker: {
                     radius: 6
                 },
-                data: [100, 110, 125, 95, 64, 76, 62, 44, 35, 29, 18, 2]
+                data: this.state.pontosRestantes
+                //data: [100, 110, 125, 95, 64, 76, 62, 44, 35, 29, 18, 2]
             }]
         }
 
