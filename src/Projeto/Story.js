@@ -287,7 +287,7 @@ class Story extends Component {
                                 <Button onClick={this.hideView}>Fechar</Button>
                             </ModalActions>
                         </Modal>
-                        <Button onClick={this.edit} size='mini' icon='edit outline' />
+                        {this.props.situacao === 'Concluida' ? (<Button disabled size='mini' icon='edit outline' />) : (<Button onClick={this.edit} size='mini' icon='edit outline' />)}
                         <Modal
                             size='small'
                             open={this.state.modalOpenUpdate}
