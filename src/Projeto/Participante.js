@@ -1,6 +1,5 @@
 import React, { Component, Fragment } from 'react';
 import { List, Image, Icon, Button, Modal, Form } from 'semantic-ui-react';
-import { Redirect } from 'react-router-dom';
 import { db} from '../config';
 
 class Participante extends Component {
@@ -10,7 +9,6 @@ class Participante extends Component {
 
         this.state = {
             openAndCloseDelete: false,
-            redirect: false
         }
     }
 
@@ -66,9 +64,9 @@ class Participante extends Component {
     }
 
     render() {
-        if((this.props.equipeProj[this.props.idUsuario].email === this.props.email) === null){
+        /*if((this.props.equipeProj[this.props.idUsuario].email === this.props.email) === null){
             return <Redirect to='/' />
-        }
+        }*/
         return (
             <Fragment>
                 &nbsp;&nbsp;&nbsp;&nbsp;

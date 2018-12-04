@@ -21,6 +21,7 @@ class Stories extends Component {
             estaCarregando: false,
             stories: {},
             equipeProj: {},
+            estaNaEquipe: false,
             scrumMasterProj: '',
             descProj: '',
             dataInicioProj: new Date(),
@@ -33,7 +34,7 @@ class Stories extends Component {
             descricao: '',
             dataInicio: new Date(),
             dataFim: new Date(),
-            situacao: 'A fazer',
+            situacao: 'Nenhum',
             storyPoint: '0',
             atualizadoPor: '',
 
@@ -88,6 +89,9 @@ class Stories extends Component {
         }
         let mes = date.getMonth();
         mes += 1;
+        if (mes < 10) {
+            mes = `0${mes}`
+        }
         let ano = date.getFullYear();
         //console.log('data:', dia + '/' + mes + '/' + ano);
         return (<p>{dia + '/' + mes + '/' + ano}</p>)
@@ -174,15 +178,17 @@ class Stories extends Component {
 
             for (let key in stories) {
 
-                quantStories += 1
+                if (stories[key].situacao !== 'Nenhum') {
 
-                if (stories[key].situacao === 'Concluida') {
-                    concluidas += 1;
-                    quantPointsConcluidos += parseInt(`0${stories[key].storyPoint}`, 10);
+                    quantStories += 1
+
+                    if (stories[key].situacao === 'Concluida') {
+                        concluidas += 1;
+                        quantPointsConcluidos += parseInt(`0${stories[key].storyPoint}`, 10);
+                    }
+
+                    quantPoints += parseInt(`0${stories[key].storyPoint}`, 10);
                 }
-
-                quantPoints += parseInt(`0${stories[key].storyPoint}`, 10);
-
             }
 
             this.setState({
@@ -198,9 +204,17 @@ class Stories extends Component {
 
 
     render() {
+
         if (this.state.estaCarregando) {
             return <p><Icon loading name='spinner' /> Carregando...</p>
         }
+
+        {/*Object.keys(this.state.equipeProj).map( key => {
+            if(this.state.equipeProj[key].email === auth.currentUser.email){
+                console.log(auth.currentUser.email);
+                let estaNaEquipe = true;
+            }
+        })*/}
 
         return (
 

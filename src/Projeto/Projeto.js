@@ -85,6 +85,9 @@ class Projeto extends Component {
         }
         let mes = date.getMonth();
         mes += 1;
+        if (mes < 10) {
+            mes = `0${mes}`
+        }
         let ano = date.getFullYear();
         //console.log('data:', dia + '/' + mes + '/' + ano);
         return (<p>{dia + '/' + mes + '/' + ano}</p>)

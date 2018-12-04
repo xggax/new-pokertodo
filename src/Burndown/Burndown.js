@@ -45,6 +45,7 @@ class Burndown extends Component {
         projetoRef.on('value', (snapshot) => {
             let projeto = snapshot.val();
             let start_date;
+            let duracaoDiasIdeal;
             if (projeto) {
                 let dataInicio = projeto.dataInicioPrevista;
                 dataInicio = moment(dataInicio).format('L');
@@ -55,7 +56,7 @@ class Burndown extends Component {
                 start_date = moment(dataInicio, 'DD-MM-YYYY');
                 let end_date = moment(dataFim, 'DD-MM-YYYY');
                 let duracao = moment.duration(end_date.diff(start_date));
-                let duracaoDiasIdeal = duracao.asDays();
+                duracaoDiasIdeal = duracao.asDays();
                 //console.log('duração ideal: ', duracaoDiasIdeal);
                 //let dif = dataFim.diff(dataInicio, 'days')
                 //console.log(dif);
@@ -69,12 +70,12 @@ class Burndown extends Component {
                 });
             }
 
-            this.totalConcluidas(start_date);
+            this.totalConcluidas(start_date, duracaoDiasIdeal+1);
         });
 
     }
 
-    totalConcluidas = (dataInicioProj) => {
+    totalConcluidas = (dataInicioProj, duracaoDiasIdealProj) => {
         const idSubmit = this.props.match.params.id;
         const storiesRef = db.ref(`projetos/${idSubmit}/stories`);
 
@@ -88,6 +89,8 @@ class Burndown extends Component {
             const pontosRestantes = [];
 
             for (let key in stories) {
+
+                if(stories[key].situacao !== 'Nenhum'){
 
                 quantStories += 1
 
@@ -151,7 +154,7 @@ class Burndown extends Component {
                 // incrementando a soma da quantidade total de pontos de todas as estórias
                 quantPoints += parseInt(`0${stories[key].storyPoint}`, 10);
 
-
+                }
 
             }
 
@@ -305,6 +308,7 @@ class Burndown extends Component {
     }
 
     render() {
+        let resultado = this.state.totalSprintEstimativa / this.state.duracaoDiasIdeal
         return (
             <Fragment>
                 <HeaderCustom />
@@ -314,7 +318,7 @@ class Burndown extends Component {
                         constructorType={'chart'}
                         options={this.linhaIdeal()}
                     />
-                    <Segment>Quantidade de Pontos ideias por dia: {this.state.totalSprintEstimativa / this.state.duracaoDiasIdeal}</Segment>
+                    <Segment>Quantidade de Pontos ideias por dia: {resultado.toFixed(2)}</Segment>
                 </Container>
             </Fragment>
         );

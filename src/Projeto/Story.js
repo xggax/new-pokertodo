@@ -152,6 +152,9 @@ class Story extends Component {
         if(updateStory.situacao === 'Fazendo'){
             updateStory.dataFimReal = null
         }
+        if(updateStory.situacao === 'Nenhum'){
+            updateStory.dataFimReal = null
+        }
 
         const usuario = db.ref().child('usuarios').orderByChild('uid').equalTo(`${auth.currentUser.uid}`);
 
@@ -169,7 +172,7 @@ class Story extends Component {
             descricaoNovo: '',
             dataInicioNovo: new Date(),
             datafimNovo: new Date(),
-            situacao: 'A fazer',
+            situacao: 'Nenhum',
             storyPointNovo: '',
             atualizadoPorNovo: '',
         });
@@ -202,6 +205,9 @@ class Story extends Component {
         }
         if (this.props.situacao === 'Concluida') {
             return 'green'
+        }
+        if (this.props.situacao === 'Nenhum') {
+            return 'grey'
         }
     }
 
