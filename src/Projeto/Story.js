@@ -100,6 +100,9 @@ class Story extends Component {
         }
         let mes = date.getMonth();
         mes += 1;
+        if (mes < 10) {
+            mes = `0${mes}`
+        }
         let ano = date.getFullYear();
         //console.log('data:', dia + '/' + mes + '/' + ano);
         return (<Fragment>{dia + '/' + mes + '/' + ano}</Fragment>)
@@ -142,17 +145,17 @@ class Story extends Component {
             storyPoint: this.state.pontosNovo,
             atualizadoPor: auth.currentUser.displayName,
         }
-        
-        if(updateStory.situacao === 'Concluida'){
+
+        if (updateStory.situacao === 'Concluida') {
             updateStory.dataFimReal = moment().format('L');
         }
-        if(updateStory.situacao === 'A fazer'){
+        if (updateStory.situacao === 'A fazer') {
             updateStory.dataFimReal = null
         }
-        if(updateStory.situacao === 'Fazendo'){
+        if (updateStory.situacao === 'Fazendo') {
             updateStory.dataFimReal = null
         }
-        if(updateStory.situacao === 'Nenhum'){
+        if (updateStory.situacao === 'Nenhum') {
             updateStory.dataFimReal = null
         }
 
@@ -219,7 +222,7 @@ class Story extends Component {
                 }
                 < Segment textAlign='left' color={this.corDoProgresso()}>
                     <List size={"tiny"}>
-                        <Header as='h4'>Título: {this.props.titulo.substr(0, 20)}
+                        <Header as='h4'>Título: {this.props.titulo.substr(0, 30)}
                             <Header.Subheader>
                                 <List.Item >
                                     <Icon name='file alternate'></Icon>Descrição: {this.props.descricao.substr(0, 15) + '...'}
@@ -267,10 +270,10 @@ class Story extends Component {
                                     </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
                                         Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
                                     </ListItem> : (this.props.situacao) === 'Concluido' ? <ListItem>
-                                                Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
-                                            </ListItem> : <ListItem>
-                                                Progresso: <Label size='tiny' color='grey'>{this.props.situacao}</Label>
-                                            </ListItem>
+                                        Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
+                                    </ListItem> : <ListItem>
+                                                    Progresso: <Label size='tiny' color='grey'>{this.props.situacao}</Label>
+                                                </ListItem>
                                 }
                                 <ListItem>
                                     <p>Pontos: {this.props.pontos}</p>
@@ -339,9 +342,20 @@ class Story extends Component {
                                     <Form.Field>
                                         <label>Novo Progresso</label>
                                         <select value={this.state.situacao} name="situacao" onChange={this.handleChangeNormal}>
-                                            <option value="A fazer">A Fazer</option>
-                                            <option value="Fazendo">Fazendo</option>
-                                            <option value="Concluida">Concluída</option>
+                                            {this.state.situacao !== 'Fazendo' ?
+                                                (<Fragment>
+                                                    <option value="Nenhum">Nenhum</option>
+                                                    <option value="A fazer">A Fazer</option>
+                                                    <option value="Fazendo">Fazendo</option>
+                                                    <option value="Concluida">Concluída</option>
+                                                </Fragment>) :
+                                                (<Fragment>
+                                                    <option value="A fazer">A Fazer</option>
+                                                    <option value="Fazendo">Fazendo</option>
+                                                    <option value="Concluida">Concluída</option>
+                                                </Fragment>)
+                                            }
+
                                         </select>
                                     </Form.Field>
                                     <Form.Field>
