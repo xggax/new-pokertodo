@@ -136,7 +136,7 @@ class Stories extends Component {
 
         this.setState({
             stories: {},
-            estaCarregando: true,
+            //estaCarregando: true,
         })
 
         const projetoRef = db.ref(`projetos/${idProj}`);
@@ -151,7 +151,7 @@ class Stories extends Component {
                     dataInicioProj: projeto.dataInicioPrevista,
                     dataFimProj: projeto.dataFimPrevista,
                     scrumMasterProj: projeto.scrumMasterProj,
-                    estaCarregando: false,
+                    //estaCarregando: false,
                 });
             }
         });
@@ -204,11 +204,11 @@ class Stories extends Component {
 
 
     render() {
-
+        /*
         if (this.state.estaCarregando) {
             return <p><Icon loading name='spinner' /> Carregando...</p>
         }
-
+        */
         {/*Object.keys(this.state.equipeProj).map( key => {
             if(this.state.equipeProj[key].email === auth.currentUser.email){
                 console.log(auth.currentUser.email);
