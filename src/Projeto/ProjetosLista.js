@@ -263,7 +263,6 @@ class ProjetosLista extends Component {
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="DD/MM/AAAA"
                                                 />
-                                                {JSON.stringify(this.state.dataInicioNovo)}
                                             </Form.Field>
                                             <Form.Field>
                                                 <label>Data Fim Prevista:</label>
@@ -276,7 +275,6 @@ class ProjetosLista extends Component {
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="DD/MM/AAAA"
                                                 />
-                                                {JSON.stringify(this.state.dataFimNovo)}
                                             </Form.Field>
                                             <Button onClick={this.hide}>Cancelar</Button>
                                             <Button type='submit'>Cadastrar</Button>
