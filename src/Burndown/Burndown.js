@@ -99,38 +99,38 @@ class Burndown extends Component {
                     // Colocando data inicio no formato do moment local
                     let dataInicio = stories[key].dataInicio;
                     dataInicio = moment(dataInicio).format('L');
-                    console.log('Data Inicio: ', dataInicio);
+                    //console.log('Data Inicio: ', dataInicio);
 
                     //Data Fim Real já vem no formato do moment local
                     let dataFimReal = stories[key].dataFimReal;
                     let dataFimIdealFormatada = moment(stories[key].dataFim).format('L');
-                    console.log('Data FimIdeal: ', dataFimIdealFormatada);
-                    console.log('Data FimReal: ', dataFimReal);
+                    //console.log('Data FimIdeal: ', dataFimIdealFormatada);
+                    //console.log('Data FimReal: ', dataFimReal);
 
                     //Duração IDEAL da estória
                     let start_date_ideal = moment(dataInicio, 'DD-MM-YYYY');
                     let end_date_ideal = moment(dataFimIdealFormatada, 'DD-MM-YYYY');
                     let duracaoIdeal = moment.duration(end_date_ideal.diff(start_date_ideal));
                     let duracaoDiasIdeal = duracaoIdeal.asDays();
-                    console.log('Duração Ideal: ', duracaoDiasIdeal);
-                    console.log('Dia do término Ideal é no dia: ', duracaoDiasIdeal + 1)
+                    //console.log('Duração Ideal: ', duracaoDiasIdeal);
+                    //console.log('Dia do término Ideal é no dia: ', duracaoDiasIdeal + 1)
 
                     // Duração REAL da estória
                     let start_date = moment(dataInicio, 'DD-MM-YYYY');
                     let end_date = moment(dataFimReal, 'DD-MM-YYYY');
                     let duracaoReal = moment.duration(end_date.diff(start_date));
                     let duracaoDiasReal = duracaoReal.asDays();
-                    console.log('Duração Real: ', duracaoDiasReal);
-                    console.log('Dia do término Real foi no dia: ', duracaoDiasReal + 1)
+                    //console.log('Duração Real: ', duracaoDiasReal);
+                    //console.log('Dia do término Real foi no dia: ', duracaoDiasReal + 1)
 
 
 
                     // Duração da Estória no sprint e Dia da conclusão no sprint
                     let duracaoRealNoProj = moment.duration(end_date.diff(dataInicioProj));
                     let duracaoDiasNoProj = duracaoRealNoProj.asDays();
-                    console.log('Duração Real no Projeto: ', duracaoDiasNoProj);
-                    let diaTerminoGrafico = duracaoDiasNoProj + 1;
-                    console.log('Dia do término Real no gráfico é no dia: ', diaTerminoGrafico);
+                    //console.log('Duração Real no Projeto: ', duracaoDiasNoProj);
+                    let diaTerminoGrafico = duracaoDiasNoProj;
+                    //console.log('Dia do término Real no gráfico é no dia: ', diaTerminoGrafico);
 
                     // Previnir que não entre no gráfico datas concluídas após o período correto
 
@@ -139,7 +139,7 @@ class Burndown extends Component {
                         atual.push({ dia: diaTerminoGrafico, pontuacaoConcluida: parseInt(`0${stories[key].storyPoint}`, 10) });
                     }
                     else{
-                        console.log('nada faz')
+                       // console.log('nada faz')
                     }
 
                     // incrementando como conluida
@@ -160,11 +160,11 @@ class Burndown extends Component {
 
             if (quantPointsConcluidos > 0) {
 
-                console.log('vetorNaoOrganizado: ', atual);
+                //console.log('vetorNaoOrganizado: ', atual);
                 atual.sort(function (a, b) {
                     return a.dia < b.dia ? -1 : a.dia > b.dia ? 1 : 0;
                 });
-                console.log('vetorAtualOrganizado: ', atual);
+                //console.log('vetorAtualOrganizado: ', atual);
 
                 //Inicializando vetor com objetos de props: dias até a duração do projeto, e pontuação concluída inicial zero.
 
@@ -173,7 +173,7 @@ class Burndown extends Component {
                     atualFinal.push({ dia: i, pontuacaoConcluida: 0 });
                     pontosRestantes.push(0);
                 }
-                console.log('inicialização: ', atualFinal);
+                //console.log('inicialização: ', atualFinal);
 
                 //atualFinal - vetor inicializado com todos os dias e pontuações concluídas com zero.
                 //quantPointsConcluidos - soma de todas as estórias concluídas, incrementada a cada verificação.
@@ -185,10 +185,10 @@ class Burndown extends Component {
                 for (let i = 0; i <= atual.length - 1; i++) {
                     if (atual[i] !== undefined) {
                         atualFinal[atual[i].dia].pontuacaoConcluida = atualFinal[atual[i].dia].pontuacaoConcluida + atual[i].pontuacaoConcluida;
-                        console.log(i);
+                        //console.log(i);
                     }
                 }
-                console.log('vetor atualFinal com dias e pontuação concluída naquele dia: ', atualFinal)
+                //console.log('vetor atualFinal com dias e pontuação concluída naquele dia: ', atualFinal)
 
                 let resultado;
                 for (let i = 0; i <= this.state.duracaoDiasIdeal - 1; i++) {
@@ -198,12 +198,13 @@ class Burndown extends Component {
                     } else {
                         resultado = resultado - atualFinal[i].pontuacaoConcluida;
                         pontosRestantes[i] = resultado;
+                       // console.log('pontos restantes', pontosRestantes[i]);
                     }
                 }
-                console.log('pontos restantes', pontosRestantes);
+                
 
             } else {
-                console.log('Sem gráfico atual ainda!');
+               // console.log('Sem gráfico atual ainda!');
             }
 
 
@@ -282,9 +283,8 @@ class Burndown extends Component {
                 lineWidth: 2,
                 data: (() => {
                     const ideal = [];
-                    //let totalSprintEstimativa = this.inserirdados.value.idpontos;
-                    //let totalDias = this.inserirdados.value.iddias;
                     let idealIncrement = this.state.totalSprintEstimativa / this.state.duracaoDiasIdeal;
+                    idealIncrement = idealIncrement.toFixed(4);
                     for (let i = 1; i <= this.state.duracaoDiasIdeal; i++) {
                         ideal.push(idealIncrement * i);
                     }
