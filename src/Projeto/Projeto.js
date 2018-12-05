@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
-import { Grid, Segment, Header, Icon, List, Modal, Button, Input, Form, ListContent, Image, ListItem } from 'semantic-ui-react';
+import { Grid, Segment, Header, Icon, List, Modal, Button, Input, Form, ListContent, Image, ListItem, TextArea } from 'semantic-ui-react';
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
@@ -45,7 +45,7 @@ class Projeto extends Component {
         this.handleOpenRenomear();
     }
 
-    handleChange = event => {
+    handleChangeNormal = event => {
         console.log(event)
         const target = event.target;
         const value = target.value;
@@ -235,11 +235,11 @@ class Projeto extends Component {
                                     <Form onSubmit={this.renomearItem}>
                                         <Form.Field>
                                             <label>Novo Título:</label>
-                                            <Input required type='text' name='nomeProj' placeholder='Novo Nome' value={this.state.nomeProj} onChange={this.handleChange} />
+                                            <Input required type='text' name='nomeProj' placeholder='Novo Nome' value={this.state.nomeProj} onChange={this.handleChangeNormal} />
                                         </Form.Field>
                                         <Form.Field>
                                             <label>Nova Descrição:</label>
-                                            <Input required type='text' name='descricaoProj' placeholder='Nova Descrição' value={this.state.descricaoProj} onChange={this.handleChange} />
+                                            <TextArea required type='text' name='descricaoProj' placeholder='Nova Descrição' value={this.state.descricaoProj} onChange={this.handleChangeNormal} />
                                         </Form.Field>
                                         <Form.Field>
                                             <label>Nova Data de Início Prevista:</label>

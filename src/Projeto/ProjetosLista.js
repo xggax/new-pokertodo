@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Grid, Container, Header, Segment, Button, Icon, Modal, Form, Input } from 'semantic-ui-react';
+import { Grid, Container, Header, Segment, Button, Icon, Modal, Form, Input, TextArea } from 'semantic-ui-react';
 import DatePicker from "react-datepicker";
 import isAfter from 'date-fns/isAfter';
 import "react-datepicker/dist/react-datepicker.css";
@@ -71,7 +71,6 @@ class ProjetosLista extends Component {
         if (isAfter(startDate, endDate)) {
             endDate = startDate;
         }
-
         this.setState({ dataInicioNovo: startDate, dataFimNovo: endDate });
     };
 
@@ -149,8 +148,8 @@ class ProjetosLista extends Component {
         this.setState({
             tituloNovo: '',
             descricaoNovo: '',
-            dataInicioNovo: new Date(),
-            dataFimNovo: new Date(),
+            //dataInicioNovo: new Date(),
+            //dataFimNovo: new Date(),
         });
 
         this.hide();
@@ -221,7 +220,7 @@ class ProjetosLista extends Component {
 
 
     render() {
-
+        
         return (
             <Fragment>
                 <HeaderCustom />
@@ -251,7 +250,7 @@ class ProjetosLista extends Component {
                                             </Form.Field>
                                             <Form.Field>
                                                 <label>Descrição:</label>
-                                                <textarea required type='text' name='descricaoNovo' value={this.state.descricaoNovo} placeholder='Descição' rows='3' onChange={this.handleChangeNormal} />
+                                                <TextArea required type='text' name='descricaoNovo' value={this.state.descricaoNovo} placeholder='Descrição' rows='3' onChange={this.handleChangeNormal} />
                                             </Form.Field>
                                             <Form.Field>
                                                 <label>Data de Início Prevista:</label>
@@ -264,6 +263,7 @@ class ProjetosLista extends Component {
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="DD/MM/AAAA"
                                                 />
+                                                {JSON.stringify(this.state.dataInicioNovo)}
                                             </Form.Field>
                                             <Form.Field>
                                                 <label>Data Fim Prevista:</label>
@@ -276,6 +276,7 @@ class ProjetosLista extends Component {
                                                     dateFormat="dd/MM/yyyy"
                                                     placeholderText="DD/MM/AAAA"
                                                 />
+                                                {JSON.stringify(this.state.dataFimNovo)}
                                             </Form.Field>
                                             <Button onClick={this.hide}>Cancelar</Button>
                                             <Button type='submit'>Cadastrar</Button>
