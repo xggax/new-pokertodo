@@ -225,7 +225,7 @@ class Stories extends Component {
                         <Header as='h2'>Quadro Kanban</Header>
                     </Segment>
                     <Header as='h2' >
-                        Projeto: {this.props.match.params.nome}
+                        Projeto: {this.props.match.params.nome}<br/><br/>
                         <Header.Subheader>Descrição: {this.state.descProj}</Header.Subheader>
                     </Header>
                     <List horizontal>
@@ -241,14 +241,15 @@ class Stories extends Component {
                         </ListItem>
                     </List>
                     <Divider />
+                    <Header as='h3' color='teal'>Equipe: </Header>
                     <Participantes
                         equipeProj={this.state.equipeProj}
                         scrumMasterProj={this.state.scrumMasterProj}
                         idProj={this.props.match.params.id}
                         carregaStories={this.carregaStories}
-                    //carregaStories= {this.carregaStories}
                     />
                     <Divider />
+                    <br/><br/><br/>
                     <Link to={`/burndown/${this.props.match.params.nome}/${this.props.match.params.id}`}>
                         <List floated='left' horizontal>
                             <ListItem><Icon color='teal' name='chart line' /></ListItem>
@@ -265,11 +266,11 @@ class Stories extends Component {
                         </ListItem>
                     </List>
                     <br />
-                    <Header as='h3'>Progresso das Estórias:</Header>
+                    <Header as='h3' color='teal'>Progresso das Estórias:</Header>
                     {
                         this.state.quantConcluidas !== this.state.quantStories || this.state.quantStories === 0 ?
-                            <Progress color='teal' value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio' /> :
-                            <Progress success value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio'>Successo
+                            <Progress indicating color='teal' value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio' ></Progress>:
+                            <Progress active color='green' value={this.state.quantConcluidas} total={this.state.quantStories} progress='ratio'>Successo
                         </Progress>
                     }
 

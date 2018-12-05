@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { List, Image, Icon, Button, Modal, Form } from 'semantic-ui-react';
-import { db} from '../config';
+import { db } from '../config';
 
 class Participante extends Component {
 
@@ -69,49 +69,50 @@ class Participante extends Component {
         }*/
         return (
             <Fragment>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <Image avatar src={this.props.foto} />
-                <List.Content>
-                    <List.Header>{this.props.nome}</List.Header>
-                    {
-                        (this.props.email === this.props.scrumMasterProj) ?
-                            (
-                                <Fragment>
-                                    ScrumMaster <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
-                                    <Modal
-                                    dimmer='blurring' 
-                                    open={this.state.openAndCloseDelete}>
-                                        <Modal.Header color='teal'>Remover {this.props.nome}?</Modal.Header>
-                                        <Modal.Content>
-                                            <Form onSubmit={this.handleSubmitRemove}>
-                                                <Form.Field>
-                                                    <Button onClick={this.showAndHide} color='red' inverted>Cancelar</Button><Button color='green' inverted type='submit'>Sim</Button>
-                                                </Form.Field>
-                                            </Form>
-                                        </Modal.Content>
-                                    </Modal>
-                                </Fragment>
-                            ) :
-                            (
-                                <Fragment>
-                                    Membro <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
-                                    <Modal
-                                    dimmer='blurring' 
-                                    open={this.state.openAndCloseDelete}>
-                                        <Modal.Header color='teal'>Remover {this.props.nome}?</Modal.Header>
-                                        <Modal.Content>
-                                            <Form onSubmit={this.handleSubmitRemove}>
-                                                <Form.Field>
-                                                    <Button onClick={this.showAndHide} color='red' inverted>Cancelar</Button><Button color='green' inverted type='submit'>Sim</Button>
-                                                </Form.Field>
-                                            </Form>
-                                        </Modal.Content>
-                                    </Modal>
-                                </Fragment>
-                            )
-                    }
-                </List.Content>
-
+                
+                <List.Item>
+                    <Image avatar src={this.props.foto} />
+                    <List.Content>
+                        <List.Header>{this.props.nome}</List.Header>
+                        {
+                            (this.props.email === this.props.scrumMasterProj) ?
+                                (
+                                    <Fragment>
+                                        ScrumMaster <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
+                                        <Modal
+                                            dimmer='blurring'
+                                            open={this.state.openAndCloseDelete}>
+                                            <Modal.Header color='teal'>Remover {this.props.nome}?</Modal.Header>
+                                            <Modal.Content>
+                                                <Form onSubmit={this.handleSubmitRemove}>
+                                                    <Form.Field>
+                                                        <Button onClick={this.showAndHide} color='red' inverted>Cancelar</Button><Button color='green' inverted type='submit'>Sim</Button>
+                                                    </Form.Field>
+                                                </Form>
+                                            </Modal.Content>
+                                        </Modal>
+                                    </Fragment>
+                                ) :
+                                (
+                                    <Fragment>
+                                        Membro <Icon color='red' name='remove user' link title='Deletar Membro' onClick={this.showAndHide} />
+                                        <Modal
+                                            dimmer='blurring'
+                                            open={this.state.openAndCloseDelete}>
+                                            <Modal.Header color='teal'>Remover {this.props.nome}?</Modal.Header>
+                                            <Modal.Content>
+                                                <Form onSubmit={this.handleSubmitRemove}>
+                                                    <Form.Field>
+                                                        <Button onClick={this.showAndHide} color='red' inverted>Cancelar</Button><Button color='green' inverted type='submit'>Sim</Button>
+                                                    </Form.Field>
+                                                </Form>
+                                            </Modal.Content>
+                                        </Modal>
+                                    </Fragment>
+                                )
+                        }
+                    </List.Content>
+                </List.Item>
             </Fragment>
         )
     }

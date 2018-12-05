@@ -114,17 +114,16 @@ class Participantes extends Component {
 
     render() {
         return (
-            <List horizontal>
+            <List  horizontal>
                 {/*
                     this.props.scrumMasterProj === this.props.usuarioEmail ? 
                     <Button title='Trocar Papel' onClick={this.showAndHide} floated='left' size='mini' color='teal'>
                         <Icon name='user plus' floated='left' />
                     </Button>: null
                 */}
-                <Button title='Adicionar Membro' onClick={this.showAndHide} floated='left' size='mini' color='teal'>
-                    <Icon name='user plus' floated='left' />
-                </Button>
-                <ListItem>
+                    <Button title='Adicionar Membro' onClick={this.showAndHide} floated='left' size='mini' color='teal'>
+                        <Icon name='user plus' floated='left' />
+                    </Button>
                     <Modal
                         dimmer='blurring'
                         open={this.state.openAndClose}>
@@ -144,11 +143,6 @@ class Participantes extends Component {
                             </Form>
                         </Modal.Content>
                     </Modal>
-                </ListItem>
-                <List.Item>
-                    <Header as='h3' color='teal'>Equipe: </Header>
-                </List.Item>
-                <List.Item>
                     {
                         this.props.equipeProj && Object.keys(this.props.equipeProj)
                             .map(key => {
@@ -168,7 +162,6 @@ class Participantes extends Component {
 
                             )
                     }
-                </List.Item>
             </List>
         )
     }
