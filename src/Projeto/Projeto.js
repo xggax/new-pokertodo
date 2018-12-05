@@ -102,11 +102,11 @@ class Projeto extends Component {
             updates['projetos/' + idProj] = null;
             updates['usuariosNoProjeto/' + idProj] = null;
             Object.keys(projeto.equipeProj).map(key => {
-                console.log('vai enviar!!!!')
-                console.log('key: ', key);
+                //console.log('vai enviar!!!!')
+                //console.log('key: ', key);
                 updates['projetosDoUsuario/' + key + '/' + idProj] = null;
-                console.log('enviou!!!!');
-                console.log('-------------------')
+                //console.log('enviou!!!!');
+                //console.log('-------------------')
                 return db.ref().update(updates);
             });
         })
@@ -130,15 +130,15 @@ class Projeto extends Component {
             updates['projetos/' + idProj + '/atualizadoPor'] = atualizadoPor;
 
             Object.keys(projeto.equipeProj).map(key => {
-                console.log('vai enviar!!!!')
-                console.log('key: ', key);
+                //console.log('vai enviar!!!!')
+                //console.log('key: ', key);
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/nome'] = this.state.nomeProj;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/descricao'] = this.state.descricaoProj;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/dataInicioPrevista'] = this.state.dataInicioPrevista;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/dataFimPrevista'] = this.state.dataFimPrevista;
                 updates['projetosDoUsuario/' + key + '/' + idProj + '/atualizadoPor'] = atualizadoPor;
-                console.log('enviou!!!!');
-                console.log('-------------------')
+                //console.log('enviou!!!!');
+                //console.log('-------------------')
                 return db.ref().update(updates);
             });
 

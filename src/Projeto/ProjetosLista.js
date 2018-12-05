@@ -33,7 +33,7 @@ class ProjetosLista extends Component {
 
     componentDidMount = () => {
 
-        console.log('entrou aqui')
+        //console.log('entrou aqui')
         auth.onAuthStateChanged((usuario) => {
             if (usuario) {
                 //console.log('entrou aqui e logou');
@@ -204,7 +204,7 @@ class ProjetosLista extends Component {
                 //console.log(auth.currentUser)
                 return auth.currentUser;
             } else {
-                console.log('Recebendo os dados ainda...');
+                //console.log('Recebendo os dados ainda...');
             }
         }, 400);
 

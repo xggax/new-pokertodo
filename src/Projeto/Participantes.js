@@ -40,9 +40,9 @@ class Participantes extends Component {
 
                 queryBuscaNaEquipe.once('value', (snapshot) => {
                     const estouNaEquipe = snapshot.val();
-                    console.log('estouNaEquipe? ', estouNaEquipe);
+                    //console.log('estouNaEquipe? ', estouNaEquipe);
                     if (estouNaEquipe) {
-                        console.log('Já tá na equipe! ');
+                        //console.log('Já tá na equipe! ');
                     } else {
                         const chaveUsuarioBuscado = Object.keys(usuarioBuscado)[0];
                         //console.log('chave do usuario buscado', chaveUsuarioBuscado);
@@ -65,11 +65,11 @@ class Participantes extends Component {
                             db.ref().update(updates1);
 
 
-                            console.log('Equipe do Projeto:', projeto.equipeProj);
+                            //console.log('Equipe do Projeto:', projeto.equipeProj);
 
                             projeto.equipeProj[chaveUsuarioBuscado] = usuarioBuscado[chaveUsuarioBuscado];
 
-                            console.log('Equipe do Projeto com novo usuario:', projeto.equipeProj);
+                            //console.log('Equipe do Projeto com novo usuario:', projeto.equipeProj);
 
                             Object.keys(projeto.equipeProj).map(key => {
                                 //const usuariosDoProjeto = db.ref().child('projetosDoUsario').child(`${key}`);
@@ -85,7 +85,7 @@ class Participantes extends Component {
                     }
                 })
             } else {
-                console.log("Usuário não está cadastrado no sistema!");
+                //console.log("Usuário não está cadastrado no sistema!");
             }
         })
 

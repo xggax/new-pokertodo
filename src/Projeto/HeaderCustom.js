@@ -58,7 +58,7 @@ class HeaderCustom extends Component {
                 //console.log(auth.currentUser)
                 return auth.currentUser;
             } else {
-              console.log('Recebendo os dados ainda...');
+              //console.log('Recebendo os dados ainda...');
             }
           }, 350);
     }

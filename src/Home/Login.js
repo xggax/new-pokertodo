@@ -38,12 +38,12 @@ class Login extends Component {
     }
     
     isRegistered = () => {
-        console.log('verificação de registro!')
+        //console.log('verificação de registro!')
         const usuariosRef = db.ref().child(`usuarios`);
         usuariosRef.on('value', (snapshot) => {
             let usuarioNovo = {};
             let usuarios = snapshot.val();
-            console.log('usuario novo: ', usuarios);
+            //console.log('usuario novo: ', usuarios);
             
             for (let key in usuarios){
                 if(usuarios === null || usuarios === undefined || usuarios[key].uid !== auth.currentUser.uid){
@@ -67,7 +67,7 @@ class Login extends Component {
     autenticarGoogle = (provider) => {
         // console.log(provider);
         const result = auth.signInWithPopup(providers[provider]);
-        console.log('result: ', result.user.displayName);
+        //console.log('result: ', result.user.displayName);
 
     }
 

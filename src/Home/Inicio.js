@@ -42,7 +42,7 @@ class Inicio extends Component {
             }
         }, function (error) {
             if (error.code === 'auth/account-exists-with-different-credential') {
-                console.log(error.code);
+               // console.log(error.code);
             }
         });
 
