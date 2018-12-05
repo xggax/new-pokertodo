@@ -144,6 +144,7 @@ class Story extends Component {
             situacao: this.state.situacao,
             storyPoint: this.state.pontosNovo,
             atualizadoPor: auth.currentUser.displayName,
+            comentarios: this.state.comentarios
         }
 
         if (updateStory.situacao === 'Concluida') {
@@ -269,7 +270,7 @@ class Story extends Component {
                                         Progresso:<Label size='tiny' color='red'>{this.props.situacao}</Label>
                                     </ListItem> : (this.props.situacao) === 'Fazendo' ? <ListItem>
                                         Progresso: <Label size='tiny' color='yellow'>{this.props.situacao}</Label>
-                                    </ListItem> : (this.props.situacao) === 'Concluido' ? <ListItem>
+                                    </ListItem> : (this.props.situacao) === 'Concluida' ? <ListItem>
                                         Progresso: <Label size='tiny' color='green'>{this.props.situacao}</Label>
                                     </ListItem> : <ListItem>
                                                     Progresso: <Label size='tiny' color='grey'>{this.props.situacao}</Label>
